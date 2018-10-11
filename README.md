@@ -7,7 +7,7 @@
  
  ***
 
-| Exemplos de variáveis dependentes  | Exemplos de variáveis independentes |
+|: Exemplos de variáveis dependentes  :|: Exemplos de variáveis independentes :|
 | ------------- | ------------- |
 | Tempo que cada semáforo permanece num certo estado (verde/vermelho)  | Fluxo de veículos em cada via da rede |
 | Tempo que um conjunto de pedestres espera antes de atravessar  | Número de pedestres em cada cruzamento  |
