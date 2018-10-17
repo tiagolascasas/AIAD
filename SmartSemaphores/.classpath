@@ -9,7 +9,7 @@
 	<classpathentry kind="con" path="GROOVY_SUPPORT"/>
 	<classpathentry kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry kind="con" path="REPAST_SIMPHONY_SUPPORT"/>
-	<classpathentry kind="lib" path="C:/Users/up201503616/Desktop/AIAD/SmartSemaphores/lib/jade.jar"/>
-	<classpathentry kind="lib" path="C:/Users/up201503616/Desktop/AIAD/SmartSemaphores/lib/SAJaS.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/nadiacarvalho/Documents/Github/AIAD/SmartSemaphores/lib/jade.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/nadiacarvalho/Documents/Github/AIAD/SmartSemaphores/lib/SAJaS.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
