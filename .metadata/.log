@@ -4532,3 +4532,13 @@ Stack Trace
 !MESSAGE The project description file (.project) for 'Geotracks' was missing.  This file contains important information about the project.  A new project description file has been created, but some information about the project may have been lost.
 !SUBENTRY 1 org.eclipse.core.resources 2 234 2018-10-17 16:52:28.743
 !MESSAGE The project description file (.project) for 'Zombies_Demo' was missing.  This file contains important information about the project.  A new project description file has been created, but some information about the project may have been lost.
+!SESSION 2018-10-18 16:13:41.496 -----------------------------------------------
+eclipse.buildId=4.7.1.M20171009-0410
+java.version=1.8.0_172
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_PT
+Framework arguments:  -product org.eclipse.epp.package.committers.product -keyring /Users/nadiacarvalho/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.committers.product -keyring /Users/nadiacarvalho/.eclipse_keyring
+
+!ENTRY org.eclipse.core.net 1 0 2018-10-18 16:17:22.605
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
