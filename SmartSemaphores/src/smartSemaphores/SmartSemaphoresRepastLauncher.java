@@ -63,42 +63,41 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	{
 		try
 		{
-			//Semaphoric agents on road cross A
-			int[] crossAagents = {1, 11, 4, 8};
+			// Semaphoric agents on road cross A
+			int[] crossAagents = { 1, 11, 4, 8 };
 			for (int i : crossAagents)
 			{
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents);
 				this.crossContainerA.acceptNewAgent("Semaphoric agent " + i, agent).start();
 			}
-			
-			//Semaphoric agents on road cross B
-			int[] crossBagents = {3, 13, 6, 10};
+
+			// Semaphoric agents on road cross B
+			int[] crossBagents = { 3, 13, 6, 10 };
 			for (int i : crossBagents)
 			{
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents);
-				this.crossContainerB.acceptNewAgent("Semaphoric agent" + i, agent).start();
+				this.crossContainerB.acceptNewAgent("Semaphoric agent " + i, agent).start();
 			}
-			
-			//Semaphoric agents on road cross C
-			int[] crossCagents = {14, 17, 15, 12};
+
+			// Semaphoric agents on road cross C
+			int[] crossCagents = { 14, 17, 15, 12 };
 			for (int i : crossCagents)
 			{
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents);
 				this.crossContainerC.acceptNewAgent("Semaphoric agent " + i, agent).start();
 			}
-			
-			//Sink agents (two sinks per cross)
+
+			// Sink agents (two sinks per cross)
 			this.crossContainerA.acceptNewAgent("Sink agent 2", new SinkAgent(2)).start();
 			this.crossContainerA.acceptNewAgent("Sink agent 7", new SinkAgent(7)).start();
-			
+
 			this.crossContainerB.acceptNewAgent("Sink agent 5", new SinkAgent(5)).start();
 			this.crossContainerB.acceptNewAgent("Sink agent 9", new SinkAgent(9)).start();
-			
+
 			this.crossContainerC.acceptNewAgent("Sink agent 16", new SinkAgent(16)).start();
 			this.crossContainerC.acceptNewAgent("Sink agent 18", new SinkAgent(18)).start();
-			
-		} 
-		catch (StaleProxyException e)
+
+		} catch (StaleProxyException e)
 		{
 			e.printStackTrace();
 		}
@@ -113,6 +112,18 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 		netBuilder.buildNetwork();
 
 		return super.build(context);
+	}
+
+	public static Agent getAgent(Context<?> context, String name)
+	{
+		for (Object obj : context.getObjects(Agent.class))
+		{
+			if (((Agent) obj).getAID().getName().equals(name))
+			{
+				return (Agent) obj;
+			}
+		}
+		return null;
 	}
 
 }
