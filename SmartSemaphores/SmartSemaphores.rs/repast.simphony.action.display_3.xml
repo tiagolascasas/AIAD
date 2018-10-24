@@ -6,12 +6,18 @@
       <string>smartSemaphores.SemaphoricAgent</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
+    <entry>
+    	<string>smartSemaphores.SinkAgent</string>
+    	<string>repast.simphony.visualization.editedStyle.EditedStyle2D</string></entry>
   </styles>
   <editedStyles>
     <entry>
       <string>smartSemaphores.SemaphoricAgent</string>
       <string>SmartSemaphores.SemaphoricAgent.style_0.xml</string>
     </entry>
+    <entry>
+    	<string>smartSemaphores.SinkAgent</string>
+    	<string>SmartSemaphores.SemaphoricSink.style_0.xml</string></entry>
   </editedStyles>
   <netStyles>
     <entry>
@@ -43,6 +49,9 @@
       <string>smartSemaphores.SemaphoricAgent</string>
       <int>2</int>
     </entry>
+    <entry>
+    	<string>smartSemaphores.SinkAgent</string>
+    	<int>3</int></entry>
   </layerOrder>
   <projections>
     <repast.simphony.scenario.data.ProjectionData>

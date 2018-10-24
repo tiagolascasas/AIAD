@@ -17,7 +17,7 @@ public class SemaphoricAgent extends Agent
 	
 	private static final long serialVersionUID = -3443153228626928466L;
 
-	public SemaphoricAgent()
+	public SemaphoricAgent(int i, int[] cross1agents)
 	{
 
 	}
