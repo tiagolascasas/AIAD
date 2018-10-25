@@ -10,6 +10,7 @@ import jade.tools.rma.rma;
 import jade.wrapper.StaleProxyException;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.graph.NetworkBuilder;
+import repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D;
 import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
@@ -55,7 +56,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 		this.crossContainerA = rt.createAgentContainer(p1);
 		this.crossContainerB = rt.createAgentContainer(p2);
 		this.crossContainerC = rt.createAgentContainer(p3);
-
+		
 		launchAgents();
 	}
 

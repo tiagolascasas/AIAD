@@ -1,5 +1,7 @@
 package smartSemaphores;
 
+import java.util.ArrayList;
+
 import repast.simphony.context.Context;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
@@ -9,19 +11,52 @@ import sajas.core.behaviours.WakerBehaviour;
 
 public class SemaphoricAgent extends Agent
 {
-	private Context<?> context;
-	private Network<Object> net;
-	private RepastEdge<Object> edge = null;
-	private int id;
-	private int[] neighbours;
+	private ArrayList<String> neighbours;
 	private boolean on = false;
 	
-	private static final long serialVersionUID = -3443153228626928466L;
-
-	public SemaphoricAgent(int id, int[] neighbours)
+	public SemaphoricAgent(int id, int[] neighboursIDs)
 	{
-		this.id = id;
-		this.neighbours = neighbours;
+		this.neighbours = new ArrayList<>();
+		for (int nID : neighboursIDs)
+		{
+			if (nID == id)
+				continue;
+			neighbours.add(makeFullName(nID));
+		}
+		
 		this.addBehaviour(new TestBehaviour());
+	}
+	
+	private String makeFullName(int nID) 
+	{
+		return "Semaphoric agent " + nID + "@SmartSemaphores";
+	}
+
+	public void switchState(boolean turnOn)
+	{
+		if (turnOn == this.on)
+			return;
+		
+		for (String agentName : this.neighbours)
+		{
+			Context<?> context = ContextUtils.getContext(this);
+			Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);
+			Network<Object> net = (Network<Object>) ContextUtils.getContext(this).getProjection("SmartSemaphores Road Network");
+			if (turnOn)
+			{
+				net.addEdge(this, targetAgent);
+			}
+			else
+			{
+				RepastEdge<Object> edge = net.getEdge(this, targetAgent);
+				net.removeEdge(edge);
+			}
+		}
+		this.on = turnOn;
+	}
+
+	public boolean getCurrentState() 
+	{
+		return this.on;
 	}
 }

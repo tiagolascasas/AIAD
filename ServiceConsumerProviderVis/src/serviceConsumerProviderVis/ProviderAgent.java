@@ -245,7 +245,7 @@ public class ProviderAgent extends Agent {
 		public void onStart() {
 			super.onStart();
 			
-			// create edge
+			// create \
 			Context<?> context = ContextUtils.getContext(myAgent);
 			Agent agent = RepastSServiceConsumerProviderLauncher.getAgent(context, subContractedProvider);
 			net = (Network<Object>) ContextUtils.getContext(myAgent).getProjection("Service Consumer/Provider network");
