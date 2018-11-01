@@ -27,12 +27,4 @@ public class Grade3PolynimialGenerator {
 		return y;
 	}
 	
-	public static void main(String [] args)
-	{
-		Grade3PolynimialGenerator CarGenerator= new Grade3PolynimialGenerator(System.currentTimeMillis());
-		System.out.println(CarGenerator.calculateY(1));
-		System.out.println(CarGenerator.calculateY(100));
-		System.out.println(CarGenerator.calculateY(47));
-		System.out.println(CarGenerator.calculateY(1000));
-	}
 }
