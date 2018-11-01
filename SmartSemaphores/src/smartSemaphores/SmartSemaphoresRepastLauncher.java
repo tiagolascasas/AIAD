@@ -68,7 +68,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			int[] crossAagents = { 1, 11, 4, 8 };
 			for (int i : crossAagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents);
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents,10);
 				this.crossContainerA.acceptNewAgent("Semaphoric agent " + i, agent).start();
 			}
 
@@ -76,7 +76,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			int[] crossBagents = { 3, 13, 6, 10 };
 			for (int i : crossBagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents);
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents,10);
 				this.crossContainerB.acceptNewAgent("Semaphoric agent " + i, agent).start();
 			}
 
@@ -84,7 +84,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			int[] crossCagents = { 14, 17, 15, 12 };
 			for (int i : crossCagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents);
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents,10);
 				this.crossContainerC.acceptNewAgent("Semaphoric agent " + i, agent).start();
 			}
 

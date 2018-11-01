@@ -5,6 +5,11 @@ import sajas.core.behaviours.Behaviour;
 
 public class TestBehaviour extends Behaviour
 {
+	
+	public final static int MAX_OFF_TIME=180;
+	public final static int MAX_ON_TIME=120;
+	public final static int MIN_ON_TIME=20;
+	
 	private boolean done = false;
 	private int counter = 0;
 	
@@ -17,7 +22,12 @@ public class TestBehaviour extends Behaviour
 			return;
 		
 		SemaphoricAgent agent = (SemaphoricAgent)myAgent;
-		agent.switchState(!agent.getCurrentState());
+		
+		/*PLACEHOLDER till code refactor*/
+		if(agent.getCurrentState() == SemaphoricAgent.semaphoreStates.ON)
+			agent.switchState(SemaphoricAgent.semaphoreStates.OFF);
+		else 
+			agent.switchState(SemaphoricAgent.semaphoreStates.ON);
 	}
 
 	@Override
