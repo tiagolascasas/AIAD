@@ -1,13 +1,15 @@
 package smartSemaphores.jade;
 
-import sajas.core.Agent;
-
-public class SinkAgent extends Agent
+public class SinkAgent extends RoadAgent
 {
-
-	public SinkAgent(int i)
+	public int addCars(int increment)
 	{
-		// TODO Auto-generated constructor stub
+		currentCars += increment;
+		return -1;
 	}
-
+	
+	public static String makeFullName(int nID)
+	{
+		return "Sink agent " + nID + "@SmartSemaphores";
+	}
 }

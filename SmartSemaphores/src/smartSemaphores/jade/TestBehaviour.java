@@ -24,10 +24,10 @@ public class TestBehaviour extends Behaviour
 		SemaphoricAgent agent = (SemaphoricAgent)myAgent;
 		
 		/*PLACEHOLDER till code refactor*/
-		if(agent.getCurrentState() == SemaphoricAgent.semaphoreStates.ON)
-			agent.switchState(SemaphoricAgent.semaphoreStates.OFF);
+		if(agent.getCurrentState() == SemaphoreStates.GREEN)
+			agent.switchState(SemaphoreStates.RED);
 		else 
-			agent.switchState(SemaphoricAgent.semaphoreStates.ON);
+			agent.switchState(SemaphoreStates.GREEN);
 	}
 
 	@Override

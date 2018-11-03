@@ -10,20 +10,13 @@ import sajas.core.Agent;
 import sajas.core.behaviours.WakerBehaviour;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
 
-public class SemaphoricAgent extends Agent
+public class SemaphoricAgent extends RoadAgent
 {
-
-	public static enum semaphoreStates
-	{
-		ON, OFF
-	};
-
-	public final int roadSpaceLimit;
-
+	public final int capacity;
 	private ArrayList<String> neighbours;
-	private semaphoreStates state = semaphoreStates.OFF;
+	private SemaphoreStates state = SemaphoreStates.RED;
 
-	public SemaphoricAgent(int id, int[] neighboursIDs, int roadSpacelimit)
+	public SemaphoricAgent(int id, int[] neighboursIDs, int[] sinkIDs, int capacity)
 	{
 		this.neighbours = new ArrayList<>();
 		for (int nID : neighboursIDs)
@@ -32,7 +25,11 @@ public class SemaphoricAgent extends Agent
 				continue;
 			neighbours.add(makeFullName(nID));
 		}
-		this.roadSpaceLimit = roadSpacelimit;
+		for (int nID : sinkIDs)
+		{
+			neighbours.add(SinkAgent.makeFullName(nID));
+		}
+		this.capacity = capacity;
 		this.addBehaviour(new TestBehaviour());
 	}
 
@@ -41,7 +38,7 @@ public class SemaphoricAgent extends Agent
 		return "Semaphoric agent " + nID + "@SmartSemaphores";
 	}
 
-	public void switchState(semaphoreStates wantedState)
+	public void switchState(SemaphoreStates wantedState)
 	{
 		if (wantedState == this.state)
 			return;
@@ -52,10 +49,11 @@ public class SemaphoricAgent extends Agent
 			Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);
 			Network<Object> net = (Network<Object>) ContextUtils.getContext(this)
 					.getProjection("SmartSemaphores Road Network");
-			if (wantedState == semaphoreStates.ON)
+			if (wantedState == SemaphoreStates.GREEN)
 			{
 				net.addEdge(this, targetAgent);
-			} else
+			}
+			else
 			{
 				RepastEdge<Object> edge = net.getEdge(this, targetAgent);
 				net.removeEdge(edge);
@@ -64,8 +62,48 @@ public class SemaphoricAgent extends Agent
 		this.state = wantedState;
 	}
 
-	public semaphoreStates getCurrentState()
+	public SemaphoreStates getCurrentState()
 	{
 		return this.state;
+	}
+
+	public int addCars(int increment)
+	{
+		if (this.currentCars + increment > this.capacity)
+		{
+			this.currentCars = this.capacity;
+			return this.capacity - increment;
+		} else
+		{
+			this.currentCars += increment;
+			return increment;
+		}
+	}
+
+	public int removeCars(int decrement)
+	{
+		if (this.currentCars - decrement < 0)
+		{
+			int diff = decrement - this.currentCars;
+			this.currentCars = 0;
+			return diff;
+		} else
+		{
+			this.currentCars -= decrement;
+			return decrement;
+		}
+	}
+
+	public ArrayList<RoadAgent> getNeighbours()
+	{
+		ArrayList<RoadAgent> neighbours = new ArrayList<>();
+		
+		for (String id : this.neighbours)
+		{
+			Context<?> context = ContextUtils.getContext(this);
+			Agent agent = SmartSemaphoresRepastLauncher.getAgent(context, id);
+			neighbours.add((RoadAgent) agent);
+		}
+		return neighbours;
 	}
 }
