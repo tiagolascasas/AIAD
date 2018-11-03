@@ -1,13 +1,15 @@
-package utils;
+package smartSemaphores.repast;
 
 import java.util.Random;
 
-public class Grade3PolynimialGenerator {
+public class FluxGenerator
+{
 	private final static int MAX_Y = 7;
 
 	float grade3constant, grade2constant, grade1constant, grade0constant;
 
-	public Grade3PolynimialGenerator(long seed) {
+	public FluxGenerator(long seed)
+	{
 
 		Random generator = new Random(seed);
 		grade3constant = generator.nextFloat() * 10;
@@ -16,7 +18,8 @@ public class Grade3PolynimialGenerator {
 		grade0constant = generator.nextFloat() * 10;
 	}
 
-	public int calculateY(int x) {
+	public int calculateY(int x)
+	{
 		int y;
 
 		y = (int) (grade3constant * Math.pow(x, 3) + grade2constant * Math.pow(x, 2) + grade1constant * x
@@ -26,5 +29,5 @@ public class Grade3PolynimialGenerator {
 
 		return y;
 	}
-	
+
 }

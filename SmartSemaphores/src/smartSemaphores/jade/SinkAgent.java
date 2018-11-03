@@ -1,4 +1,4 @@
-package smartSemaphores;
+package smartSemaphores.jade;
 
 import sajas.core.Agent;
 

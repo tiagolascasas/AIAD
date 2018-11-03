@@ -1,4 +1,4 @@
-package smartSemaphores;
+package smartSemaphores.jade;
 
 import repast.simphony.visualization.editedStyle.EditedEdgeStyle2D;
 import sajas.core.behaviours.Behaviour;

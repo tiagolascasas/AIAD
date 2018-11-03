@@ -14,6 +14,9 @@ import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
 import sajas.wrapper.ContainerController;
+import smartSemaphores.jade.SemaphoricAgent;
+import smartSemaphores.jade.SinkAgent;
+import smartSemaphores.repast.SimulationManager;
 
 /**
  * Launcher for Repast
@@ -125,6 +128,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	{
 		int ticks = (int)(this.ticksPerSecond * 3600 * this.hours);
 		RunEnvironment.getInstance().endAt(ticks);
+		RunEnvironment.getInstance().setScheduleTickDelay(70);
 	}
 
 	public static Agent getAgent(Context<?> context, String name)

@@ -1,4 +1,4 @@
-package smartSemaphores;
+package smartSemaphores.jade;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,7 @@ import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
 import sajas.core.behaviours.WakerBehaviour;
+import smartSemaphores.SmartSemaphoresRepastLauncher;
 
 public class SemaphoricAgent extends Agent {
 	
