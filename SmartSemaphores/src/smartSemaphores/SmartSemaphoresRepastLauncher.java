@@ -3,14 +3,13 @@
  */
 package smartSemaphores;
 
-import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
-import jade.tools.rma.rma;
 import jade.wrapper.StaleProxyException;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.graph.NetworkBuilder;
-import repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D;
+import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.engine.schedule.ScheduledMethod;
 import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
@@ -21,11 +20,14 @@ import sajas.wrapper.ContainerController;
  */
 public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 {
+	private static float ticksPerSecond = 1.0f;
+	private static int hours = 5;
+	
 	private ContainerController mainContainer;
 	private ContainerController crossContainerA;
 	private ContainerController crossContainerB;
 	private ContainerController crossContainerC;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -108,11 +110,21 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	public Context<?> build(Context<Object> context)
 	{
 		// http://repast.sourceforge.net/docs/RepastJavaGettingStarted.pdf
+		
+		initSimulation();
 
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("SmartSemaphores Road Network", context, true);
 		netBuilder.buildNetwork();
+		
+		context.add(new SimulationManager(this));
 
 		return super.build(context);
+	}
+
+	private void initSimulation()
+	{
+		int ticks = (int)(this.ticksPerSecond * 3600 * this.hours);
+		RunEnvironment.getInstance().endAt(ticks);
 	}
 
 	public static Agent getAgent(Context<?> context, String name)
@@ -126,5 +138,4 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 		}
 		return null;
 	}
-
 }
