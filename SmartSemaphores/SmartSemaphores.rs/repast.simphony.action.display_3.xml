@@ -3,20 +3,20 @@
   <type>2D</type>
   <styles>
     <entry>
-      <string>smartSemaphores.SemaphoricAgent</string>
+      <string>smartSemaphores.jade.SemaphoricAgent</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-    	<string>smartSemaphores.SinkAgent</string>
+    	<string>smartSemaphores.jade.SinkAgent</string>
     	<string>repast.simphony.visualization.editedStyle.EditedStyle2D</string></entry>
   </styles>
   <editedStyles>
     <entry>
-      <string>smartSemaphores.SemaphoricAgent</string>
+      <string>smartSemaphores.jade.SemaphoricAgent</string>
       <string>SmartSemaphores.SemaphoricAgent.style_0.xml</string>
     </entry>
     <entry>
-    	<string>smartSemaphores.SinkAgent</string>
+    	<string>smartSemaphores.jade.SinkAgent</string>
     	<string>SmartSemaphores.SinkAgent.style_0.xml</string></entry>
   </editedStyles>
   <netStyles>
@@ -46,11 +46,11 @@
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>smartSemaphores.SemaphoricAgent</string>
+      <string>smartSemaphores.jade.SemaphoricAgent</string>
       <int>0</int>
     </entry>
     <entry>
-    	<string>smartSemaphores.SinkAgent</string>
+    	<string>smartSemaphores.jade.SinkAgent</string>
     	<int>1</int></entry>
   </layerOrder>
   <projections>
@@ -71,9 +71,9 @@
   </projectionDescriptors>
   <props/>
   <backgroundColor>
-    <red>0</red>
-    <green>0</green>
-    <blue>0</blue>
+    <red>255</red>
+    <green>255</green>
+    <blue>255</blue>
     <alpha>255</alpha>
   </backgroundColor>
   <valueLayers/>

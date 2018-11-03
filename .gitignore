@@ -58,3 +58,8 @@ local.properties
 
 
 examples/
+debug.log.1
+velocity.log
+velocity.log.1
+debug.log
+/SmartSemaphores/velocity.log

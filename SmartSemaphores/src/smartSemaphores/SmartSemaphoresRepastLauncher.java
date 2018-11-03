@@ -3,6 +3,8 @@
  */
 package smartSemaphores;
 
+import java.util.ArrayList;
+
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -10,6 +12,7 @@ import repast.simphony.context.Context;
 import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.ui.RunOptionsModel;
 import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
@@ -30,6 +33,9 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	private ContainerController crossContainerA;
 	private ContainerController crossContainerB;
 	private ContainerController crossContainerC;
+	private ArrayList<Agent> agents;
+	
+	private SimulationManager manager;
 	
 	/*
 	 * (non-Javadoc)
@@ -62,11 +68,18 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 		this.crossContainerB = rt.createAgentContainer(p2);
 		this.crossContainerC = rt.createAgentContainer(p3);
 		
+		this.agents = new ArrayList<>();
+		
 		launchAgents();
+		
+		int[] sources = {1, 8, 10, 6, 15, 17};
+		int[] middles = {3, 4, 11, 12, 13, 14};
+		int[] sinks = {2, 7, 9, 5, 16, 18};
+		this.manager.init(sources, middles, sinks);
 	}
 
 	private void launchAgents()
-	{
+	{		
 		try
 		{
 			// Semaphoric agents on road cross A
@@ -75,6 +88,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			{
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents,10);
 				this.crossContainerA.acceptNewAgent("Semaphoric agent " + i, agent).start();
+				this.agents.add(agent);
 			}
 
 			// Semaphoric agents on road cross B
@@ -83,6 +97,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			{
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents,10);
 				this.crossContainerB.acceptNewAgent("Semaphoric agent " + i, agent).start();
+				this.agents.add(agent);
 			}
 
 			// Semaphoric agents on road cross C
@@ -91,18 +106,35 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			{
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents,10);
 				this.crossContainerC.acceptNewAgent("Semaphoric agent " + i, agent).start();
+				this.agents.add(agent);
 			}
 
 			// Sink agents (two sinks per cross)
-			this.crossContainerA.acceptNewAgent("Sink agent 2", new SinkAgent(2)).start();
-			this.crossContainerA.acceptNewAgent("Sink agent 7", new SinkAgent(7)).start();
-
-			this.crossContainerB.acceptNewAgent("Sink agent 5", new SinkAgent(5)).start();
-			this.crossContainerB.acceptNewAgent("Sink agent 9", new SinkAgent(9)).start();
-
-			this.crossContainerC.acceptNewAgent("Sink agent 16", new SinkAgent(16)).start();
-			this.crossContainerC.acceptNewAgent("Sink agent 18", new SinkAgent(18)).start();
-
+			SinkAgent sinkAgent;
+			
+			sinkAgent = new SinkAgent(2);
+			this.crossContainerA.acceptNewAgent("Sink agent 2", sinkAgent).start();
+			this.agents.add(sinkAgent);
+			
+			sinkAgent = new SinkAgent(7);
+			this.crossContainerA.acceptNewAgent("Sink agent 7", sinkAgent).start();
+			this.agents.add(sinkAgent);
+			
+			sinkAgent = new SinkAgent(5);
+			this.crossContainerB.acceptNewAgent("Sink agent 5", sinkAgent).start();
+			this.agents.add(sinkAgent);
+			
+			sinkAgent = new SinkAgent(9);
+			this.crossContainerB.acceptNewAgent("Sink agent 9", sinkAgent).start();
+			this.agents.add(sinkAgent);
+			
+			sinkAgent = new SinkAgent(16);
+			this.crossContainerC.acceptNewAgent("Sink agent 16", sinkAgent).start();
+			this.agents.add(sinkAgent);
+			
+			sinkAgent = new SinkAgent(18);
+			this.crossContainerC.acceptNewAgent("Sink agent 18", sinkAgent).start();
+			this.agents.add(sinkAgent);
 		} catch (StaleProxyException e)
 		{
 			e.printStackTrace();
@@ -119,7 +151,8 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("SmartSemaphores Road Network", context, true);
 		netBuilder.buildNetwork();
 		
-		context.add(new SimulationManager(this));
+		this.manager = new SimulationManager(this);
+		context.add(this.manager);
 
 		return super.build(context);
 	}
@@ -139,6 +172,18 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			{
 				return (Agent) obj;
 			}
+		}
+		return null;
+	}
+
+	public Agent getAgent(int i)
+	{
+		String id = SemaphoricAgent.makeFullName(i);
+		
+		for (Agent agent : this.agents)
+		{
+			if (agent.getAID().getName().equals(id))
+				return agent;
 		}
 		return null;
 	}

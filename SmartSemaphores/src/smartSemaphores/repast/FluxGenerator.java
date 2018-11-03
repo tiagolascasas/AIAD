@@ -10,7 +10,6 @@ public class FluxGenerator
 
 	public FluxGenerator(long seed)
 	{
-
 		Random generator = new Random(seed);
 		grade3constant = generator.nextFloat() * 10;
 		grade2constant = generator.nextFloat() * 10;
