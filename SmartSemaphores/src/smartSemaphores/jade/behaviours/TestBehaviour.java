@@ -1,7 +1,9 @@
-package smartSemaphores.jade;
+package smartSemaphores.jade.behaviours;
 
 import repast.simphony.visualization.editedStyle.EditedEdgeStyle2D;
 import sajas.core.behaviours.Behaviour;
+import smartSemaphores.jade.SemaphoreStates;
+import smartSemaphores.jade.SemaphoricAgent;
 
 public class TestBehaviour extends Behaviour
 {
@@ -18,7 +20,7 @@ public class TestBehaviour extends Behaviour
 	{	
 		counter++;
 		
-		if (counter % 3 != 0)
+		if (counter % 5 != 0)
 			return;
 		
 		SemaphoricAgent agent = (SemaphoricAgent)myAgent;

@@ -27,6 +27,10 @@ public class SimulationManager
 	private ArrayList<Vehicle> injectedVehicles;
 	private int exitedCars = 0;
 	
+	//variables for timed semaphores
+	public static int currentActiveSequence = 1;
+	private static int currentActiveCount = 0;
+	
 	public SimulationManager(SmartSemaphoresRepastLauncher simulation)
 	{
 		this.simulation = simulation;
@@ -111,7 +115,7 @@ public class SimulationManager
 				for (int i = 0; i < SmartSemaphoresRepastLauncher.EXIT_RATE; i++)
 				{
 					int road = RandomHelper.nextIntFromTo(0, possibilites - 1);
-					RoadAgent targetAgent = neighbours.get(i);
+					RoadAgent targetAgent = neighbours.get(road);
 					int availableSpace = targetAgent.getAvailabeSpace(1);
 					int availableCars = agent.getCurrentNormalCars();
 					
@@ -131,6 +135,18 @@ public class SimulationManager
 	{
 		if (currentTick == 0)
 			RunEnvironment.getInstance().setScheduleTickDelay(40);
+		
+		if (this.simulation.TIMED_AGENTS)
+		{
+			this.currentActiveCount++;
+			if (this.currentActiveCount == 60)
+			{
+				this.currentActiveCount = 0;
+				this.currentActiveSequence++;
+				if (this.currentActiveSequence == 5)
+					this.currentActiveSequence = 1;
+			}
+		}
 		
 		currentTick++;
 	}

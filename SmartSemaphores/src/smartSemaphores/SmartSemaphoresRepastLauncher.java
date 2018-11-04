@@ -1,6 +1,3 @@
-/**
- * 
- */
 package smartSemaphores;
 
 import java.util.ArrayList;
@@ -20,17 +17,16 @@ import sajas.wrapper.ContainerController;
 import smartSemaphores.jade.RoadAgent;
 import smartSemaphores.jade.SemaphoricAgent;
 import smartSemaphores.jade.SinkAgent;
+import smartSemaphores.jade.TimedSemaphoricAgent;
 import smartSemaphores.repast.SimulationManager;
 
-/**
- * Launcher for Repast
- */
 public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 {
 	public static float TICKS_PER_SECOND = 1.0f;
 	public static int HOURS = 5;
 	public static int EXIT_RATE = 3;
 	public static int MAX_TICKS;
+	public static boolean TIMED_AGENTS = true;
 
 	private ContainerController mainContainer;
 	private ContainerController crossContainerA;
@@ -40,22 +36,12 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 
 	private SimulationManager manager;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sajas.sim.repasts.RepastSLauncher#getName()
-	 */
 	@Override
 	public String getName()
 	{
 		return "SmartSemaphores";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sajas.sim.repasts.RepastSLauncher#launchJADE()
-	 */
 	@SuppressWarnings("unused")
 	@Override
 	protected void launchJADE()
@@ -73,7 +59,10 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 
 		this.agents = new ArrayList<>();
 
-		launchAgents();
+		if (this.TIMED_AGENTS)
+			launchTimedAgents();
+		else
+			launchSmartAgents();
 
 		int[] sources = { 1, 8, 10, 6, 15, 17 };
 		int[] middles = { 3, 4, 11, 12, 13, 14 };
@@ -81,7 +70,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 		this.manager.init(sources, middles, sinks);
 	}
 
-	private void launchAgents()
+	private void launchSmartAgents()
 	{
 		try
 		{
@@ -113,6 +102,78 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents, crossCconnectables, 1000);
 				this.crossContainerC.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
+			}
+
+			// Agents (two sinks per cross)
+			SinkAgent sinkAgent;
+
+			sinkAgent = new SinkAgent(2);
+			this.crossContainerA.acceptNewAgent("Agent 2", sinkAgent).start();
+			this.agents.add(sinkAgent);
+
+			sinkAgent = new SinkAgent(7);
+			this.crossContainerA.acceptNewAgent("Agent 7", sinkAgent).start();
+			this.agents.add(sinkAgent);
+
+			sinkAgent = new SinkAgent(5);
+			this.crossContainerB.acceptNewAgent("Agent 5", sinkAgent).start();
+			this.agents.add(sinkAgent);
+
+			sinkAgent = new SinkAgent(9);
+			this.crossContainerB.acceptNewAgent("Agent 9", sinkAgent).start();
+			this.agents.add(sinkAgent);
+
+			sinkAgent = new SinkAgent(16);
+			this.crossContainerC.acceptNewAgent("Agent 16", sinkAgent).start();
+			this.agents.add(sinkAgent);
+
+			sinkAgent = new SinkAgent(18);
+			this.crossContainerC.acceptNewAgent("Agent 18", sinkAgent).start();
+			this.agents.add(sinkAgent);
+		} catch (StaleProxyException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void launchTimedAgents()
+	{
+		try
+		{
+			// Semaphoric agents on road cross A
+			int[] crossAagents = { 1, 11, 4, 8 };
+			int[] crossAconnectables = { 2, 7, 12, 3 };
+			int seq = 1;
+			for (int i : crossAagents)
+			{
+				TimedSemaphoricAgent agent = new TimedSemaphoricAgent(i, crossAagents, crossAconnectables, 1000, seq);
+				this.crossContainerA.acceptNewAgent("Agent " + i, agent).start();
+				this.agents.add(agent);
+				seq++;
+			}
+
+			// Semaphoric agents on road cross B
+			int[] crossBagents = { 3, 13, 6, 10 };
+			int[] crossBconnectables = { 5, 9, 4, 14 };
+			seq = 1;
+			for (int i : crossBagents)
+			{
+				TimedSemaphoricAgent agent = new TimedSemaphoricAgent(i, crossBagents, crossBconnectables, 1000, seq);
+				this.crossContainerB.acceptNewAgent("Agent " + i, agent).start();
+				this.agents.add(agent);
+				seq++;
+			}
+
+			// Semaphoric agents on road cross C
+			int[] crossCagents = { 14, 17, 15, 12 };
+			int[] crossCconnectables = { 18, 16, 11, 13 };
+			seq = 1;
+			for (int i : crossCagents)
+			{
+				TimedSemaphoricAgent agent = new TimedSemaphoricAgent(i, crossCagents, crossCconnectables, 1000, seq);
+				this.crossContainerC.acceptNewAgent("Agent " + i, agent).start();
+				this.agents.add(agent);
+				seq++;
 			}
 
 			// Agents (two sinks per cross)

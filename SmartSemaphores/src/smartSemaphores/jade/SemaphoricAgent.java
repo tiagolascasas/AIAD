@@ -8,6 +8,7 @@ import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
+import smartSemaphores.jade.behaviours.TestBehaviour;
 import smartSemaphores.repast.EmergencyVehicle;
 import smartSemaphores.repast.NormalVehicle;
 
@@ -41,7 +42,11 @@ public class SemaphoricAgent extends RoadAgent
 		this.capacity = capacity;
 		this.vehicles = new LinkedList<>();
 		this.emergency = new LinkedList<>();
-		
+	}
+	
+	@Override
+	protected void setup()
+	{
 		this.addBehaviour(new TestBehaviour());
 	}
 
