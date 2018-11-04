@@ -17,18 +17,23 @@ public class SemaphoricAgent extends Agent {
 	private int numberOfVehicles;
 	private int secondsPassedOnState;
 	private int emergencyVehicles;
-	
+
 	private ArrayList<String> neighbours;
 	private ArrayList<String> sinkAgentNeighbours;
+	private int id;
 
 	private SemaphoreStates state = SemaphoreStates.RED;
 
 	public SemaphoricAgent(int id, int[] neighboursIDs, int[] sinkIDs, int roadSpaceLimit) {
 		super();
+		this.id = id;
 		this.roadSpaceLimit = roadSpaceLimit;
-
+		this.emergencyVehicles = 0;
+		this.secondsPassedOnState = 0;
+		this.numberOfVehicles = 0;
 		this.neighbours = new ArrayList<>();
 		this.sinkAgentNeighbours = new ArrayList<>();
+
 		for (int nID : neighboursIDs) {
 			if (nID == id)
 				continue;
@@ -140,7 +145,7 @@ public class SemaphoricAgent extends Agent {
 	public ArrayList<String> getSinkAgentNeighbours() {
 		return sinkAgentNeighbours;
 	}
-	
+
 	/**
 	 * @return the emergencyVehicles
 	 */
@@ -148,5 +153,10 @@ public class SemaphoricAgent extends Agent {
 		return emergencyVehicles;
 	}
 
-
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
 }

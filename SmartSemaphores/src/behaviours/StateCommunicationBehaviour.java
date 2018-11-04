@@ -76,11 +76,8 @@ public class StateCommunicationBehaviour extends Behaviour {
 
 	private void addPriorityInformation(String aid, String content) {
 		String[] splitContent = content.split(DELIMITER);
-		ArrayList<String> agentPriorityInfo = new ArrayList<>();
-		agentPriorityInfo.addAll(Arrays.asList(splitContent));
-		agentPriorityInfo.add(aid.replaceAll("\\D+", "")); // gets the id of the name
 
-		allPriorityInformation.add(agentPriorityInfo.toArray(new String[0]));
+		allPriorityInformation.add(splitContent);
 	}
 
 	private String priorityToString() {
@@ -89,8 +86,10 @@ public class StateCommunicationBehaviour extends Behaviour {
 		String numberOfVehiclesStr = new Integer(thisAgent.getNumberOfVehicles()).toString();
 		// TODO peões
 		String stateStr = thisAgent.getState().name();
+		String idStr = new Integer(thisAgent.getId()).toString();
 
-		return priorityStr + DELIMITER + emergencyVehiclesStr + DELIMITER + numberOfVehiclesStr + DELIMITER + stateStr;
+		return priorityStr + DELIMITER + emergencyVehiclesStr + DELIMITER + numberOfVehiclesStr + DELIMITER + stateStr
+				+ DELIMITER + idStr;
 	}
 
 	@Override
@@ -119,7 +118,7 @@ public class StateCommunicationBehaviour extends Behaviour {
 		else if (thisAgent.getSecondsPassedOnState() >= GREEN_MIN_TIME)
 			return GREEN_MIN_TIME_PRIORITY;
 		else
-			return 0; // fórmula
+			return 0; // TODO fórmula
 
 	}
 
@@ -127,6 +126,6 @@ public class StateCommunicationBehaviour extends Behaviour {
 		if (thisAgent.getSecondsPassedOnState() >= RED_MAX_TIME)
 			return RED_MAX_TIME_PRIORITY;
 
-		return 0; // fórmula
+		return 0; // TODO fórmula
 	}
 }
