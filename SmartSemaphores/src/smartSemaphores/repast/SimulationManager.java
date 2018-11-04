@@ -20,6 +20,7 @@ public class SimulationManager
 	
 	private SmartSemaphoresRepastLauncher simulation;
 	private HashMap<String, FluxGenerator> generators;
+	private HashMap<String, Double> pedestrianProbs;
 	private ArrayList<SemaphoricAgent> sourceAgents;
 	private ArrayList<SemaphoricAgent> middleAgents;
 	private ArrayList<SinkAgent> sinkAgents;
@@ -37,7 +38,8 @@ public class SimulationManager
 		this.sourceAgents = new ArrayList<>();
 		this.middleAgents = new ArrayList<>();
 		this.sinkAgents = new ArrayList<>();
-		this.generators = new HashMap<>();	
+		this.generators = new HashMap<>();
+		this.pedestrianProbs = new HashMap<>();
 		this.injectedVehicles = new ArrayList<>();
 		this.injectedEmergency = new ArrayList<>();
 	}
@@ -69,6 +71,12 @@ public class SimulationManager
 			String name = agent.getAID().getName();
 			this.generators.put(name, generator);
 		}
+		
+		for (SemaphoricAgent agent : semaphoricAgents)
+		{
+			double prob = Math.random() / 4;
+			this.pedestrianProbs.put(agent.getAID().getName(), prob);
+		}
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -78,6 +86,7 @@ public class SimulationManager
 		
 		injectNormalVehicles();
 		injectEmergencyVehicles();
+		injectPedestrians();
 		transferCars();
 		
 		if (currentTick == SmartSemaphoresRepastLauncher.MAX_TICKS)
@@ -116,6 +125,21 @@ public class SimulationManager
 				EmergencyVehicle vehicle = new EmergencyVehicle(this.currentTick, agent.getID());
 				agent.addEmergencyVehicle(vehicle);
 				this.injectedEmergency.add(vehicle);
+			}
+		}
+		
+	}
+
+	private void injectPedestrians()
+	{
+		for (SemaphoricAgent agent : this.semaphoricAgents)
+		{
+			if (agent.getCurrentState() == SemaphoreStates.RED)
+			{
+				double prob = this.pedestrianProbs.get(agent.getAID().getName());
+				double random = Math.random();
+				if (random < prob)
+					agent.addPedestrian();
 			}
 		}
 		
@@ -180,8 +204,9 @@ public class SimulationManager
 		for (SemaphoricAgent agent : this.semaphoricAgents)
 		{
 			int currentCars = agent.getCurrentNormalVehicles();
+			int pedCount = agent.getPedestrianTotalCount();
 			String id = agent.getAID().getName();
-			System.out.println(id + ": " + currentCars + " currently waiting here");
+			System.out.println(id + ": " + currentCars + " currently waiting here. " + pedCount + " pedestrians crossed");
 		}
 		
 		int exitedVehicles = 0;

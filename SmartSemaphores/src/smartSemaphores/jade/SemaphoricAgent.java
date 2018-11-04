@@ -19,6 +19,8 @@ public class SemaphoricAgent extends RoadAgent
 	private ArrayList<String> semaphoricAgents;
 	private SemaphoreStates state = SemaphoreStates.RED;
 	private int id;
+	private int pedestrianCount = 0;
+	private int pedestrianTotalCount = 0;
 
 	public SemaphoricAgent(int id, int[] semaphoricIDs, int[] connectableIDs, int capacity)
 	{
@@ -69,6 +71,8 @@ public class SemaphoricAgent extends RoadAgent
 			{
 				RepastEdge<Object> edge = net.getEdge(this, targetAgent);
 				net.removeEdge(edge);
+				this.pedestrianTotalCount += this.pedestrianCount;
+				this.pedestrianCount = 0;
 			}
 		}
 		this.state = wantedState;
@@ -153,5 +157,15 @@ public class SemaphoricAgent extends RoadAgent
 			this.emergency.remove();
 		}
 		return v;
+	}
+
+	public void addPedestrian()
+	{
+		this.pedestrianCount ++;
+	}
+
+	public int getPedestrianTotalCount()
+	{
+		return pedestrianTotalCount;
 	}
 }
