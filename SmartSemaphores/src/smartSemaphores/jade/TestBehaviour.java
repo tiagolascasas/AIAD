@@ -18,7 +18,7 @@ public class TestBehaviour extends Behaviour
 	{	
 		counter++;
 		
-		if (counter % 5 != 0)
+		if (counter % 3 != 0)
 			return;
 		
 		SemaphoricAgent agent = (SemaphoricAgent)myAgent;

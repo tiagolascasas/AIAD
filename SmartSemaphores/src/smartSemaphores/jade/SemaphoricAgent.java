@@ -1,41 +1,48 @@
 package smartSemaphores.jade;
 
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 import repast.simphony.context.Context;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
-import sajas.core.behaviours.WakerBehaviour;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
+import smartSemaphores.repast.EmergencyVehicle;
+import smartSemaphores.repast.NormalVehicle;
 
 public class SemaphoricAgent extends RoadAgent
 {
 	public final int capacity;
-	private ArrayList<String> neighbours;
+	private ArrayList<String> connectableAgents;
+	private ArrayList<String> semaphoricAgents;
 	private SemaphoreStates state = SemaphoreStates.RED;
+	private int id;
 
-	public SemaphoricAgent(int id, int[] neighboursIDs, int[] sinkIDs, int capacity)
+	public SemaphoricAgent(int id, int[] semaphoricIDs, int[] connectableIDs, int capacity)
 	{
-		this.neighbours = new ArrayList<>();
-		for (int nID : neighboursIDs)
+		super(id);
+		
+		this.semaphoricAgents = new ArrayList<>();
+		this.connectableAgents = new ArrayList<>();
+		
+		for (int nID : semaphoricIDs)
 		{
 			if (nID == id)
 				continue;
-			neighbours.add(makeFullName(nID));
+			semaphoricAgents.add(makeFullName(nID));
 		}
-		for (int nID : sinkIDs)
+		
+		for (int nID : connectableIDs)
 		{
-			neighbours.add(SinkAgent.makeFullName(nID));
+			connectableAgents.add(makeFullName(nID));
 		}
+		
 		this.capacity = capacity;
+		this.vehicles = new LinkedList<>();
+		this.emergency = new LinkedList<>();
+		
 		this.addBehaviour(new TestBehaviour());
-	}
-
-	public static String makeFullName(int nID)
-	{
-		return "Semaphoric agent " + nID + "@SmartSemaphores";
 	}
 
 	public void switchState(SemaphoreStates wantedState)
@@ -43,7 +50,7 @@ public class SemaphoricAgent extends RoadAgent
 		if (wantedState == this.state)
 			return;
 
-		for (String agentName : this.neighbours)
+		for (String agentName : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);
 			Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);
@@ -67,43 +74,67 @@ public class SemaphoricAgent extends RoadAgent
 		return this.state;
 	}
 
-	public int addCars(int increment)
+	@Override
+	public int getAvailabeSpace(int increment)
 	{
-		if (this.currentCars + increment > this.capacity)
-		{
-			this.currentCars = this.capacity;
-			return this.capacity - increment;
-		} else
-		{
-			this.currentCars += increment;
+		if (this.vehicles.size() + increment <= this.capacity)
 			return increment;
-		}
+		else
+			return this.capacity - this.vehicles.size();
 	}
-
-	public int removeCars(int decrement)
+	
+	@Override
+	public void addCars(ArrayList<NormalVehicle> newCars)
 	{
-		if (this.currentCars - decrement < 0)
+		this.vehicles.addAll(newCars);
+	}
+	
+	public ArrayList<NormalVehicle> removeCars(int decrement)
+	{
+		ArrayList<NormalVehicle> removedCars = new ArrayList<>();
+		
+		while (decrement > 0 && this.vehicles.size() > 0)
 		{
-			int diff = decrement - this.currentCars;
-			this.currentCars = 0;
-			return diff;
-		} else
-		{
-			this.currentCars -= decrement;
-			return decrement;
+			NormalVehicle car = this.vehicles.element();
+			this.vehicles.remove();
 		}
+		
+		return removedCars;
+	}
+	
+	public NormalVehicle removeCar()
+	{
+		NormalVehicle car = null;
+		
+		if (this.vehicles.size() > 0)
+		{
+			car = this.vehicles.element();
+			this.vehicles.remove();
+		}
+		return car;
 	}
 
-	public ArrayList<RoadAgent> getNeighbours()
+	public ArrayList<RoadAgent> getConnectableAgents()
 	{
 		ArrayList<RoadAgent> neighbours = new ArrayList<>();
 		
-		for (String id : this.neighbours)
+		for (String id : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);
 			Agent agent = SmartSemaphoresRepastLauncher.getAgent(context, id);
 			neighbours.add((RoadAgent) agent);
 		}
 		return neighbours;
+	}
+
+	@Override
+	public void addEmergencyVehicle(EmergencyVehicle vehicle)
+	{
+		this.emergency.add(vehicle);
+	}
+
+	public int getCurrentNormalCars()
+	{
+		return this.vehicles.size();
 	}
 }

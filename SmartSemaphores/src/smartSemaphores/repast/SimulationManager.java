@@ -16,15 +16,15 @@ import smartSemaphores.jade.SinkAgent;
 
 public class SimulationManager
 {
+	public static int currentTick = 0;
+	
 	private SmartSemaphoresRepastLauncher simulation;
-	private int currentTick = 0;
 	private HashMap<String, FluxGenerator> generators;
 	private ArrayList<SemaphoricAgent> sourceAgents;
 	private ArrayList<SemaphoricAgent> middleAgents;
 	private ArrayList<SinkAgent> sinkAgents;
 	private ArrayList<SemaphoricAgent> semaphoricAgents;
-
-	private int injectedCars = 0;
+	private ArrayList<Vehicle> injectedVehicles;
 	private int exitedCars = 0;
 	
 	public SimulationManager(SmartSemaphoresRepastLauncher simulation)
@@ -34,12 +34,11 @@ public class SimulationManager
 		this.middleAgents = new ArrayList<>();
 		this.sinkAgents = new ArrayList<>();
 		this.generators = new HashMap<>();	
+		this.injectedVehicles = new ArrayList<>();
 	}
 	
 	public void init(int[] sources, int[] middles, int[] sinks)
 	{
-		//Context<?> context = ContextUtils.getContext(this);
-		
 		for (int i : sources)
 		{
 			sourceAgents.add((SemaphoricAgent) simulation.getAgent(i));
@@ -86,11 +85,18 @@ public class SimulationManager
 		{
 			SemaphoricAgent source = this.sourceAgents.get(i);
 			FluxGenerator generator = this.generators.get(source.getAID().getName());
-			
+			int id = source.getID();
 			int increment = generator.calculateY(this.currentTick);
-			this.injectedCars += source.addCars(increment);
+			
+			ArrayList<NormalVehicle> newCars = new ArrayList<>();
+			
+			int availableSpace = source.getAvailabeSpace(increment);
+			for (int j = 0; j < availableSpace; j++)
+				newCars.add(new NormalVehicle(this.currentTick, id));
+			
+			source.addCars(newCars);
+			this.injectedVehicles.addAll(newCars);
 		}
-		
 	}
 	
 	private void transferCars()
@@ -99,13 +105,23 @@ public class SimulationManager
 		{
 			if (agent.getCurrentState() == SemaphoreStates.GREEN)
 			{
-				ArrayList<RoadAgent> neighbours = agent.getNeighbours();
+				ArrayList<RoadAgent> neighbours = agent.getConnectableAgents();
 				int possibilites = neighbours.size();
 				
 				for (int i = 0; i < SmartSemaphoresRepastLauncher.EXIT_RATE; i++)
 				{
 					int road = RandomHelper.nextIntFromTo(0, possibilites - 1);
-					neighbours.get(road).addCars(1);
+					RoadAgent targetAgent = neighbours.get(i);
+					int availableSpace = targetAgent.getAvailabeSpace(1);
+					int availableCars = agent.getCurrentNormalCars();
+					
+					if (availableSpace == 1 && availableCars > 0)
+					{
+						ArrayList<NormalVehicle> cars = new ArrayList<>();
+						NormalVehicle car = agent.removeCar();
+						cars.add(car);
+						targetAgent.addCars(cars);
+					}
 				}
 			}
 		}
@@ -118,7 +134,6 @@ public class SimulationManager
 		
 		currentTick++;
 	}
-	
 	
 	private void printReportToStandardOutput()
 	{
@@ -135,7 +150,7 @@ public class SimulationManager
 			System.out.println(id + ": " + currentCars + " exited this way");
 			this.exitedCars += currentCars;
 		}
-		System.out.println("\n" + this.injectedCars + " entered the simulation");
+		System.out.println("\n" + this.injectedVehicles.size() + " entered the simulation");
 		System.out.println("\n" + this.exitedCars + " exited the simulation");
 	}
 }

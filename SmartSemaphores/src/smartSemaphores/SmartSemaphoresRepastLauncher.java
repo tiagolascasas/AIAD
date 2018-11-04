@@ -87,59 +87,59 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 		{
 			// Semaphoric agents on road cross A
 			int[] crossAagents = { 1, 11, 4, 8 };
-			int[] crossAsinks = { 2, 7 };
+			int[] crossAconnectables = { 2, 7, 12, 3 };
 			for (int i : crossAagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents, crossAsinks, 1000);
-				this.crossContainerA.acceptNewAgent("Semaphoric agent " + i, agent).start();
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents, crossAconnectables, 1000);
+				this.crossContainerA.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 			}
 
 			// Semaphoric agents on road cross B
 			int[] crossBagents = { 3, 13, 6, 10 };
-			int[] crossBsinks = { 5, 9 };
+			int[] crossBconnectables = { 5, 9, 4, 14 };
 			for (int i : crossBagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents, crossBsinks, 1000);
-				this.crossContainerB.acceptNewAgent("Semaphoric agent " + i, agent).start();
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents, crossBconnectables, 1000);
+				this.crossContainerB.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 			}
 
 			// Semaphoric agents on road cross C
 			int[] crossCagents = { 14, 17, 15, 12 };
-			int[] crossCsinks = { 18, 16 };
+			int[] crossCconnectables = { 18, 16, 11, 13 };
 			for (int i : crossCagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents, crossCsinks, 1000);
-				this.crossContainerC.acceptNewAgent("Semaphoric agent " + i, agent).start();
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents, crossCconnectables, 1000);
+				this.crossContainerC.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 			}
 
-			// Sink agents (two sinks per cross)
+			// Agents (two sinks per cross)
 			SinkAgent sinkAgent;
 
-			sinkAgent = new SinkAgent();
-			this.crossContainerA.acceptNewAgent("Sink agent 2", sinkAgent).start();
+			sinkAgent = new SinkAgent(2);
+			this.crossContainerA.acceptNewAgent("Agent 2", sinkAgent).start();
 			this.agents.add(sinkAgent);
 
-			sinkAgent = new SinkAgent();
-			this.crossContainerA.acceptNewAgent("Sink agent 7", sinkAgent).start();
+			sinkAgent = new SinkAgent(7);
+			this.crossContainerA.acceptNewAgent("Agent 7", sinkAgent).start();
 			this.agents.add(sinkAgent);
 
-			sinkAgent = new SinkAgent();
-			this.crossContainerB.acceptNewAgent("Sink agent 5", sinkAgent).start();
+			sinkAgent = new SinkAgent(5);
+			this.crossContainerB.acceptNewAgent("Agent 5", sinkAgent).start();
 			this.agents.add(sinkAgent);
 
-			sinkAgent = new SinkAgent();
-			this.crossContainerB.acceptNewAgent("Sink agent 9", sinkAgent).start();
+			sinkAgent = new SinkAgent(9);
+			this.crossContainerB.acceptNewAgent("Agent 9", sinkAgent).start();
 			this.agents.add(sinkAgent);
 
-			sinkAgent = new SinkAgent();
-			this.crossContainerC.acceptNewAgent("Sink agent 16", sinkAgent).start();
+			sinkAgent = new SinkAgent(16);
+			this.crossContainerC.acceptNewAgent("Agent 16", sinkAgent).start();
 			this.agents.add(sinkAgent);
 
-			sinkAgent = new SinkAgent();
-			this.crossContainerC.acceptNewAgent("Sink agent 18", sinkAgent).start();
+			sinkAgent = new SinkAgent(18);
+			this.crossContainerC.acceptNewAgent("Agent 18", sinkAgent).start();
 			this.agents.add(sinkAgent);
 		} catch (StaleProxyException e)
 		{
@@ -150,8 +150,6 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	@Override
 	public Context<?> build(Context<Object> context)
 	{
-		// http://repast.sourceforge.net/docs/RepastJavaGettingStarted.pdf
-
 		initSimulation();
 
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("SmartSemaphores Road Network", context, true);
@@ -184,14 +182,11 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 
 	public RoadAgent getAgent(int i)
 	{
-		String id1 = SemaphoricAgent.makeFullName(i);
-		String id2 = SinkAgent.makeFullName(i);
+		String id = RoadAgent.makeFullName(i);
 
 		for (RoadAgent agent : this.agents)
 		{
-			if (agent.getAID().getName().equals(id1))
-				return agent;
-			if (agent.getAID().getName().equals(id2))
+			if (agent.getAID().getName().equals(id))
 				return agent;
 		}
 		return null;

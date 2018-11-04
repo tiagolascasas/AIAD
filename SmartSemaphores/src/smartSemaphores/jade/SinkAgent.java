@@ -1,15 +1,45 @@
 package smartSemaphores.jade;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import smartSemaphores.repast.EmergencyVehicle;
+import smartSemaphores.repast.NormalVehicle;
+import smartSemaphores.repast.SimulationManager;
+
 public class SinkAgent extends RoadAgent
 {
-	public int addCars(int increment)
+	public SinkAgent(int id)
 	{
-		currentCars += increment;
-		return -1;
+		super(id);
+		this.emergency = new LinkedList<>();
+		this.vehicles = new LinkedList<>();
 	}
 	
-	public static String makeFullName(int nID)
+	@Override
+	public void addCars(ArrayList<NormalVehicle> newCars)
 	{
-		return "Sink agent " + nID + "@SmartSemaphores";
+		for (NormalVehicle car : newCars)
+		{
+			car.setEndPoint(this.id);
+			car.setEndTick(SimulationManager.currentTick);
+		}
+		
+		this.vehicles.addAll(newCars);
+	}
+
+	@Override
+	public void addEmergencyVehicle(EmergencyVehicle vehicle)
+	{
+		vehicle.setEndPoint(this.id);
+		vehicle.setEndTick(SimulationManager.currentTick);
+		
+		this.emergency.add(vehicle);
+	}
+
+	@Override
+	public int getAvailabeSpace(int increment)
+	{
+		return increment;
 	}
 }
