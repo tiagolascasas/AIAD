@@ -29,9 +29,14 @@ public abstract class RoadAgent extends Agent
 	
 	public abstract int getAvailabeSpace(int increment);
 	
-	public int getCurrentCars()
+	public int getCurrentNormalVehicles()
 	{
-		return vehicles.size() + emergency.size();
+		return vehicles.size();
+	}
+	
+	public int getCurrentEmergencyVehicles()
+	{
+		return emergency.size();
 	}
 
 	public Queue<NormalVehicle> getNormalVehicles()

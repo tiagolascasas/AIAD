@@ -24,8 +24,8 @@ public class SimulationManager
 	private ArrayList<SemaphoricAgent> middleAgents;
 	private ArrayList<SinkAgent> sinkAgents;
 	private ArrayList<SemaphoricAgent> semaphoricAgents;
-	private ArrayList<Vehicle> injectedVehicles;
-	private int exitedCars = 0;
+	private ArrayList<NormalVehicle> injectedVehicles;
+	private ArrayList<EmergencyVehicle> injectedEmergency;
 	
 	//variables for timed semaphores
 	public static int currentActiveSequence = 1;
@@ -39,6 +39,7 @@ public class SimulationManager
 		this.sinkAgents = new ArrayList<>();
 		this.generators = new HashMap<>();	
 		this.injectedVehicles = new ArrayList<>();
+		this.injectedEmergency = new ArrayList<>();
 	}
 	
 	public void init(int[] sources, int[] middles, int[] sinks)
@@ -75,15 +76,15 @@ public class SimulationManager
 	{
 		updateState();
 		
-		injectCars();
-		
+		injectNormalVehicles();
+		injectEmergencyVehicles();
 		transferCars();
 		
 		if (currentTick == SmartSemaphoresRepastLauncher.MAX_TICKS)
 			printReportToStandardOutput();
 	}
 
-	private void injectCars()
+	private void injectNormalVehicles()
 	{
 		for (int i = 0; i < this.sourceAgents.size(); i++)
 		{
@@ -102,7 +103,24 @@ public class SimulationManager
 			this.injectedVehicles.addAll(newCars);
 		}
 	}
-	
+
+	private void injectEmergencyVehicles()
+	{
+		double prob = simulation.EMERGENCY_PROBABILITY;
+		
+		for (SemaphoricAgent agent : this.sourceAgents)
+		{
+			double random = Math.random();
+			if (random < prob)
+			{
+				EmergencyVehicle vehicle = new EmergencyVehicle(this.currentTick, agent.getID());
+				agent.addEmergencyVehicle(vehicle);
+				this.injectedEmergency.add(vehicle);
+			}
+		}
+		
+	}
+
 	private void transferCars()
 	{
 		for (SemaphoricAgent agent : this.semaphoricAgents)
@@ -125,6 +143,12 @@ public class SimulationManager
 						NormalVehicle car = agent.removeCar();
 						cars.add(car);
 						targetAgent.addCars(cars);
+					}
+					
+					if (agent.getEmergencyVehicles().size() > 0)
+					{
+						EmergencyVehicle vehicle = agent.removeEmergencyVehicle();
+						targetAgent.addEmergencyVehicle(vehicle);
 					}
 				}
 			}
@@ -155,18 +179,27 @@ public class SimulationManager
 	{
 		for (SemaphoricAgent agent : this.semaphoricAgents)
 		{
-			int currentCars = agent.getCurrentCars();
+			int currentCars = agent.getCurrentNormalVehicles();
 			String id = agent.getAID().getName();
 			System.out.println(id + ": " + currentCars + " currently waiting here");
 		}
+		
+		int exitedVehicles = 0;
+		int exitedEmergency = 0;
+		
 		for (SinkAgent sink : this.sinkAgents)
 		{
-			int currentCars = sink.getCurrentCars();
+			int currentCars = sink.getCurrentNormalVehicles();
+			int currentEmergency = sink.getCurrentEmergencyVehicles();
 			String id = sink.getAID().getName();
 			System.out.println(id + ": " + currentCars + " exited this way");
-			this.exitedCars += currentCars;
+			exitedVehicles += currentCars;
+			exitedEmergency += currentEmergency;
 		}
-		System.out.println("\n" + this.injectedVehicles.size() + " entered the simulation");
-		System.out.println("\n" + this.exitedCars + " exited the simulation");
+		
+		System.out.println("\n" + this.injectedVehicles.size() + " normal vehicles entered the simulation");
+		System.out.println(this.injectedEmergency.size() + " emergency vehicles entered the simulation");
+		System.out.println("\n" + exitedVehicles + " normal vehicles exited the simulation");
+		System.out.println(exitedEmergency + " emergency vehicles exited the simulation");
 	}
 }

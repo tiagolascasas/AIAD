@@ -27,6 +27,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	public static int EXIT_RATE = 3;
 	public static int MAX_TICKS;
 	public static boolean TIMED_AGENTS = true;
+	public static double EMERGENCY_PROBABILITY = 0.001f;
 
 	private ContainerController mainContainer;
 	private ContainerController crossContainerA;

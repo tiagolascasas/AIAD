@@ -142,4 +142,16 @@ public class SemaphoricAgent extends RoadAgent
 	{
 		return this.vehicles.size();
 	}
+
+	public EmergencyVehicle removeEmergencyVehicle()
+	{
+		EmergencyVehicle v = null;
+		
+		if (this.emergency.size() > 0)
+		{
+			v = this.emergency.element();
+			this.emergency.remove();
+		}
+		return v;
+	}
 }
