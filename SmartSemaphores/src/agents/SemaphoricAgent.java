@@ -3,9 +3,14 @@ package agents;
 import java.util.ArrayList;
 
 import behaviours.StateCommunicationBehaviour;
+import repast.simphony.context.Context;
+import repast.simphony.space.graph.Network;
+import repast.simphony.space.graph.RepastEdge;
+import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
 import sajas.core.behaviours.OneShotBehaviour;
 import sajas.core.behaviours.TickerBehaviour;
+import smartSemaphores.SmartSemaphoresRepastLauncher;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.SinkAgent;
 
@@ -158,5 +163,43 @@ public class SemaphoricAgent extends Agent {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	public void switchState(SemaphoreStates stateToChange) {
+
+		if (stateToChange == this.state)
+			return;
+
+		addBehaviour(new OneShotBehaviour() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public void action() {
+				/*for (String agentName : this.connectableAgents)
+				{
+					Context<?> context = ContextUtils.getContext(this);
+					Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);
+					Network<Object> net = (Network<Object>) ContextUtils.getContext(this)
+							.getProjection("SmartSemaphores Road Network");
+					if (wantedState == SemaphoreStates.GREEN)
+					{
+						net.addEdge(this, targetAgent);
+					}
+					else
+					{
+						RepastEdge<Object> edge = net.getEdge(this, targetAgent);
+						net.removeEdge(edge);
+						this.pedestrianTotalCount += this.pedestrianCount;
+						this.pedestrianCount = 0;
+					}
+				}*/
+				state = stateToChange;
+				secondsPassedOnState = 0;
+				
+			}
+		});
+
 	}
 }

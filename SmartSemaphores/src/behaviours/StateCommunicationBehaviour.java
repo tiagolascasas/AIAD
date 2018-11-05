@@ -11,17 +11,22 @@ import smartSemaphores.jade.SemaphoreStates;
 
 public class StateCommunicationBehaviour extends Behaviour {
 
+	private static final int PRIORITY_VALUE_POSITION = 0;
+
+	private static final int ID_POSITION = 3;
+
 	private static final String CONVERSATION_ID = "Inform-priority";
 
 	private static final long serialVersionUID = 2495229105259679220L;
 
 	private static final String DELIMITER = "-";
+	private static final int INFO_PRIORITY_LENGTH = 4;
 
-	private static final int EMERGENCY_PRIORITY = 12;
-	private static final int ROAD_OVERFLOW_PRIORITY = 11;
-	private static final int GREEN_MAX_TIME_PRIORITY = 0;
-	private static final int GREEN_MIN_TIME_PRIORITY = 10;
-	private static final int RED_MAX_TIME_PRIORITY = 10;
+	private static final double EMERGENCY_PRIORITY = 12.0;
+	private static final double ROAD_OVERFLOW_PRIORITY = 11.0;
+	private static final double GREEN_MAX_TIME_PRIORITY = 0.0;
+	private static final double GREEN_MIN_TIME_PRIORITY = 10.0;
+	private static final double RED_MAX_TIME_PRIORITY = 10.0;
 
 	private static final int RED_MAX_TIME = 180;
 	private static final int GREEN_MAX_TIME = 120;
@@ -31,7 +36,7 @@ public class StateCommunicationBehaviour extends Behaviour {
 
 	private int repliesCnt = 0; // The counter of replies from seller agents
 	private int step = 0;
-	private int priority = 0;
+	private double priority = 0;
 	SemaphoricAgent thisAgent;
 
 	@Override
@@ -65,13 +70,61 @@ public class StateCommunicationBehaviour extends Behaviour {
 			break;
 		case 2:
 			// Decidir se tem de mudar o estado - Descobrir semáforo com maior prioridade
-			// TODO TER EM ATENÇÃO QUE O SEMÁFORO DO LADO OPOSTO TMB LIGA!!!!
+			ArrayList<String> greenCandidates = new ArrayList<>();
+
+			boolean isCandidate = findIfGreenCandidate(greenCandidates);
+
+			if (isCandidate && greenCandidates.isEmpty()) // Se for o único com máximo valor de prioridade calculada
+															// passa a verde
+				thisAgent.switchState(SemaphoreStates.GREEN);
+			else if (isCandidate && greenTieBreaker(greenCandidates)) // Se tiver valor máximo de prioridade calculada e
+																		// Passar no desempate passa a verde
+				thisAgent.switchState(SemaphoreStates.GREEN);
+			else // Se não tiver valor máximo ou não passar no desempate passa a vermelho
+				thisAgent.switchState(SemaphoreStates.RED);
 
 			step++;
 			break;
 		}
 		return;
+	}
 
+	private boolean greenTieBreaker(ArrayList<String> greenCandidates) {
+		int[] agentVariables = { thisAgent.getEmergencyVehicles(), thisAgent.getNumberOfVehicles(), thisAgent.getId() };
+
+		for (int i = 1; i < INFO_PRIORITY_LENGTH; i++) { // i=1 because priority was already evaluated
+			if (greenCandidates.isEmpty())
+				break;
+
+			for (int j = 0; j < allPriorityInformation.size(); j++) {
+				if (!greenCandidates.contains(allPriorityInformation.get(j)[ID_POSITION]))
+					continue;
+				int priorityI = Integer.parseInt(allPriorityInformation.get(j)[i]);
+
+				if (priorityI > agentVariables[i - 1]) // i -1 because agentVariables doesn't contain priority;
+					return false;
+
+				if (priorityI < agentVariables[i - 1])
+					greenCandidates.remove(allPriorityInformation.get(j)[ID_POSITION]);
+
+			}
+		}
+		return true;
+	}
+
+	private boolean findIfGreenCandidate(ArrayList<String> greenCandidates) {
+
+		for (int i = 0; i < allPriorityInformation.size(); i++) {
+			double priorityI = Double.parseDouble(allPriorityInformation.get(i)[PRIORITY_VALUE_POSITION]);
+			if (priorityI > priority) {
+				return false;
+			}
+			if (priorityI == priority) {
+				greenCandidates.add(allPriorityInformation.get(i)[ID_POSITION]);
+			}
+
+		}
+		return true;
 	}
 
 	private void addPriorityInformation(String aid, String content) {
@@ -81,15 +134,13 @@ public class StateCommunicationBehaviour extends Behaviour {
 	}
 
 	private String priorityToString() {
-		String priorityStr = new Integer(priority).toString();
-		String emergencyVehiclesStr = new Integer(thisAgent.getEmergencyVehicles()).toString();
-		String numberOfVehiclesStr = new Integer(thisAgent.getNumberOfVehicles()).toString();
+		String priorityStr = Double.toString(priority);
+		String emergencyVehiclesStr = Integer.toString(thisAgent.getEmergencyVehicles());
+		String numberOfVehiclesStr = Integer.toString(thisAgent.getNumberOfVehicles());
 		// TODO peões
-		String stateStr = thisAgent.getState().name();
-		String idStr = new Integer(thisAgent.getId()).toString();
+		String idStr = Integer.toString(thisAgent.getId());
 
-		return priorityStr + DELIMITER + emergencyVehiclesStr + DELIMITER + numberOfVehiclesStr + DELIMITER + stateStr
-				+ DELIMITER + idStr;
+		return priorityStr + DELIMITER + emergencyVehiclesStr + DELIMITER + numberOfVehiclesStr + DELIMITER + idStr;
 	}
 
 	@Override
@@ -97,7 +148,7 @@ public class StateCommunicationBehaviour extends Behaviour {
 		return step == 3;
 	}
 
-	private int calculatePriority() {
+	private double calculatePriority() {
 		if (thisAgent.hasEmergencyVehicles())
 			return EMERGENCY_PRIORITY;
 
@@ -109,23 +160,26 @@ public class StateCommunicationBehaviour extends Behaviour {
 		else if (thisAgent.getState() == SemaphoreStates.RED)
 			return calculatePriorityRed();
 
-		return -1; // TODO SE ISTO ACONTECER SOMETHING IS REALLY WRONG....
+		return -1.0; // TODO SE ISTO ACONTECER SOMETHING IS REALLY WRONG.... HOWEVER IT SHOULD
+						// PROCEED AS NORMAL?????
 	}
 
-	private int calculatePriorityGreen() {
+	private double calculatePriorityGreen() {
 		if (thisAgent.getSecondsPassedOnState() >= GREEN_MAX_TIME)
 			return GREEN_MAX_TIME_PRIORITY;
 		else if (thisAgent.getSecondsPassedOnState() >= GREEN_MIN_TIME)
 			return GREEN_MIN_TIME_PRIORITY;
 		else
-			return 0; // TODO fórmula
+			return ((-0.0002 * Math.pow(thisAgent.getSecondsPassedOnState(), 2))
+					- (0.0243 * thisAgent.getSecondsPassedOnState()) + 5.7327) + (thisAgent.carRoadRatio() * 5);
 
 	}
 
-	private int calculatePriorityRed() {
+	private double calculatePriorityRed() {
 		if (thisAgent.getSecondsPassedOnState() >= RED_MAX_TIME)
 			return RED_MAX_TIME_PRIORITY;
 
-		return 0; // TODO fórmula
+		return ((0.0002 * Math.pow(thisAgent.getSecondsPassedOnState(), 2))
+				+ (0.0005 * thisAgent.getSecondsPassedOnState()) - 0.0578) + (thisAgent.carRoadRatio() * 5);
 	}
 }
