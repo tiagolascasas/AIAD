@@ -47,6 +47,9 @@ public class StateCommunicationBehaviour extends Behaviour {
 			this.priority = calculatePriority();
 			ACLMessage InformMsg = new ACLMessage(ACLMessage.INFORM);
 			for (int i = 0; i < thisAgent.getNeighbours().size(); ++i) {
+				if (((SemaphoricAgent) myAgent).getNeighbours().get(i) == myAgent.getAID().getName())
+					continue;
+
 				InformMsg.addReceiver(new AID(thisAgent.getNeighbours().get(i), AID.ISLOCALNAME)); // TODO recheck if
 																									// AID is
 																									// full name
@@ -61,7 +64,7 @@ public class StateCommunicationBehaviour extends Behaviour {
 			if (msg != null && msg.getConversationId().equals(CONVERSATION_ID)) {
 				repliesCnt++;
 				addPriorityInformation(msg.getSender().getName(), msg.getContent());
-				if (repliesCnt >= thisAgent.getNeighbours().size()) {
+				if (repliesCnt >= thisAgent.getNeighbours().size()-1) {
 					step++;
 				}
 			} else {
