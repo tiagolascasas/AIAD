@@ -7,16 +7,13 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
-import sajas.core.behaviours.TickerBehaviour;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
-import smartSemaphores.jade.behaviours.StateCommunicationBehaviour;
+import smartSemaphores.jade.behaviours.TestBehaviour;
 import smartSemaphores.repast.EmergencyVehicle;
 import smartSemaphores.repast.NormalVehicle;
 
 public class SemaphoricAgent extends RoadAgent
 {
-	private final static int SECONDS_TO_MS = 1000;
-
 	public final int capacity;
 	private ArrayList<String> connectableAgents;
 	private ArrayList<String> semaphoricAgents;
@@ -24,65 +21,35 @@ public class SemaphoricAgent extends RoadAgent
 	private int id;
 	private int pedestrianCount = 0;
 	private int pedestrianTotalCount = 0;
-	private int secondsPassedOnState = 0;
 
 	public SemaphoricAgent(int id, int[] semaphoricIDs, int[] connectableIDs, int capacity)
 	{
 		super(id);
-
+		
 		this.semaphoricAgents = new ArrayList<>();
 		this.connectableAgents = new ArrayList<>();
-
+		
 		for (int nID : semaphoricIDs)
 		{
 			if (nID == id)
 				continue;
 			semaphoricAgents.add(makeFullName(nID));
 		}
-
+		
 		for (int nID : connectableIDs)
 		{
 			connectableAgents.add(makeFullName(nID));
 		}
-
+		
 		this.capacity = capacity;
 		this.vehicles = new LinkedList<>();
 		this.emergency = new LinkedList<>();
 	}
-
+	
 	@Override
 	protected void setup()
 	{
-		// Printout a welcome message
-		System.out.println("HELLO");
-
-		addBehaviour(new TickerBehaviour(this, SECONDS_TO_MS)
-		{
-			private static final long serialVersionUID = 1054989232567187192L;
-
-			protected void onTick()
-			{
-				secondsPassedOnState++;
-			}
-		});
-
-		// TODO verificações
-		addBehaviour(new TickerBehaviour(this, 5 * SECONDS_TO_MS)
-		{
-			private static final long serialVersionUID = -5946442955577436810L;
-
-			protected void onTick()
-			{
-				myAgent.addBehaviour(new StateCommunicationBehaviour());
-			}
-		});
-	}
-
-	@Override
-	protected void takeDown()
-	{
-		// TODO Terminate code
-		System.out.println("TERMINATE CODE");
+		this.addBehaviour(new TestBehaviour());
 	}
 
 	public void switchState(SemaphoreStates wantedState)
@@ -99,7 +66,8 @@ public class SemaphoricAgent extends RoadAgent
 			if (wantedState == SemaphoreStates.GREEN)
 			{
 				net.addEdge(this, targetAgent);
-			} else
+			}
+			else
 			{
 				RepastEdge<Object> edge = net.getEdge(this, targetAgent);
 				net.removeEdge(edge);
@@ -108,47 +76,11 @@ public class SemaphoricAgent extends RoadAgent
 			}
 		}
 		this.state = wantedState;
-		this.secondsPassedOnState = 0;
 	}
 
 	public SemaphoreStates getCurrentState()
 	{
 		return this.state;
-	}
-
-	public boolean hasEmergencyVehicles()
-	{
-		return this.emergency.size() > 0;
-	}
-
-	public float carRoadRatio()
-	{
-		return ((float) this.vehicles.size()) / ((float) this.capacity);
-	}
-
-	public int getSecondsPassedOnState()
-	{
-		return secondsPassedOnState;
-	}
-
-	/**
-	 * Gets the semaphoric agents that also share the same cross as this agent
-	 * 
-	 * @return the other semaphoric agents
-	 */
-	public ArrayList<String> getNeighbours()
-	{
-		return this.semaphoricAgents;
-	}
-
-	/**
-	 * Gets the road agents this agent can connect to
-	 * 
-	 * @return the road agents this agent can connect to
-	 */
-	public ArrayList<String> getSinkAgentNeighbours()
-	{
-		return this.connectableAgents;
 	}
 
 	@Override
@@ -159,30 +91,30 @@ public class SemaphoricAgent extends RoadAgent
 		else
 			return this.capacity - this.vehicles.size();
 	}
-
+	
 	@Override
 	public void addCars(ArrayList<NormalVehicle> newCars)
 	{
 		this.vehicles.addAll(newCars);
 	}
-
+	
 	public ArrayList<NormalVehicle> removeCars(int decrement)
 	{
 		ArrayList<NormalVehicle> removedCars = new ArrayList<>();
-
+		
 		while (decrement > 0 && this.vehicles.size() > 0)
 		{
 			NormalVehicle car = this.vehicles.element();
 			this.vehicles.remove();
 		}
-
+		
 		return removedCars;
 	}
-
+	
 	public NormalVehicle removeCar()
 	{
 		NormalVehicle car = null;
-
+		
 		if (this.vehicles.size() > 0)
 		{
 			car = this.vehicles.element();
@@ -194,7 +126,7 @@ public class SemaphoricAgent extends RoadAgent
 	public ArrayList<RoadAgent> getConnectableAgents()
 	{
 		ArrayList<RoadAgent> neighbours = new ArrayList<>();
-
+		
 		for (String id : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);
@@ -218,7 +150,7 @@ public class SemaphoricAgent extends RoadAgent
 	public EmergencyVehicle removeEmergencyVehicle()
 	{
 		EmergencyVehicle v = null;
-
+		
 		if (this.emergency.size() > 0)
 		{
 			v = this.emergency.element();
@@ -229,7 +161,7 @@ public class SemaphoricAgent extends RoadAgent
 
 	public void addPedestrian()
 	{
-		this.pedestrianCount++;
+		this.pedestrianCount ++;
 	}
 
 	public int getPedestrianTotalCount()

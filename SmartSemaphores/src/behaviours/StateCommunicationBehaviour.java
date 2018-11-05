@@ -1,14 +1,16 @@
-package smartSemaphores.jade.behaviours;
+package behaviours;
 
 import java.util.ArrayList;
-import smartSemaphores.jade.SemaphoricAgent;
+import java.util.Arrays;
+
+import agents.SemaphoricAgent;
 import jade.lang.acl.ACLMessage;
 import sajas.core.AID;
 import sajas.core.behaviours.Behaviour;
 import smartSemaphores.jade.SemaphoreStates;
 
-public class StateCommunicationBehaviour extends Behaviour
-{
+public class StateCommunicationBehaviour extends Behaviour {
+
 	private static final int PRIORITY_VALUE_POSITION = 0;
 
 	private static final int ID_POSITION = 3;
@@ -38,10 +40,8 @@ public class StateCommunicationBehaviour extends Behaviour
 	SemaphoricAgent thisAgent;
 
 	@Override
-	public void action()
-	{
+	public void action() {
 		thisAgent = (SemaphoricAgent) myAgent;
-<<<<<<< HEAD:SmartSemaphores/src/behaviours/StateCommunicationBehaviour.java
 		switch (step) {
 		case 0:
 			this.priority = calculatePriority();
@@ -66,73 +66,40 @@ public class StateCommunicationBehaviour extends Behaviour
 				addPriorityInformation(msg.getSender().getName(), msg.getContent());
 				if (repliesCnt >= thisAgent.getNeighbours().size()-1) {
 					step++;
-=======
-		switch (step)
-		{
-			case 0:
-				this.priority = calculatePriority();
-				ACLMessage InformMsg = new ACLMessage(ACLMessage.INFORM);
-				for (int i = 0; i < thisAgent.getNeighbours().size(); ++i)
-				{
-					InformMsg.addReceiver(new AID(thisAgent.getNeighbours().get(i), AID.ISLOCALNAME)); // TODO recheck
-																										// if
-																										// AID is
-																										// full name
->>>>>>> b3cd85f7d73d774e98d0c30aa13d992ab31fb5bd:SmartSemaphores/src/smartSemaphores/jade/behaviours/StateCommunicationBehaviour.java
 				}
-				InformMsg.setContent(priorityToString());
-				InformMsg.setConversationId(CONVERSATION_ID);
-				myAgent.send(InformMsg);
-				step++;
-				break;
-			case 1:
-				ACLMessage msg = myAgent.receive();
-				if (msg != null && msg.getConversationId().equals(CONVERSATION_ID))
-				{
-					repliesCnt++;
-					addPriorityInformation(msg.getSender().getName(), msg.getContent());
-					if (repliesCnt >= thisAgent.getNeighbours().size())
-					{
-						step++;
-					}
-				} else
-				{
-					block();
-				}
-				break;
-			case 2:
-				// Decidir se tem de mudar o estado - Descobrir semáforo com maior prioridade
-				ArrayList<String> greenCandidates = new ArrayList<>();
+			} else {
+				block();
+			}
+			break;
+		case 2:
+			// Decidir se tem de mudar o estado - Descobrir semáforo com maior prioridade
+			ArrayList<String> greenCandidates = new ArrayList<>();
 
-				boolean isCandidate = findIfGreenCandidate(greenCandidates);
+			boolean isCandidate = findIfGreenCandidate(greenCandidates);
 
-				if (isCandidate && greenCandidates.isEmpty()) // Se for o único com máximo valor de prioridade calculada
-																// passa a verde
-					thisAgent.switchState(SemaphoreStates.GREEN);
-				else if (isCandidate && greenTieBreaker(greenCandidates)) // Se tiver valor máximo de prioridade
-																			// calculada e
-																			// Passar no desempate passa a verde
-					thisAgent.switchState(SemaphoreStates.GREEN);
-				else // Se não tiver valor máximo ou não passar no desempate passa a vermelho
-					thisAgent.switchState(SemaphoreStates.RED);
+			if (isCandidate && greenCandidates.isEmpty()) // Se for o único com máximo valor de prioridade calculada
+															// passa a verde
+				thisAgent.switchState(SemaphoreStates.GREEN);
+			else if (isCandidate && greenTieBreaker(greenCandidates)) // Se tiver valor máximo de prioridade calculada e
+																		// Passar no desempate passa a verde
+				thisAgent.switchState(SemaphoreStates.GREEN);
+			else // Se não tiver valor máximo ou não passar no desempate passa a vermelho
+				thisAgent.switchState(SemaphoreStates.RED);
 
-				step++;
-				break;
+			step++;
+			break;
 		}
 		return;
 	}
 
-	private boolean greenTieBreaker(ArrayList<String> greenCandidates)
-	{
-		int[] agentVariables = { thisAgent.getCurrentEmergencyVehicles(), thisAgent.getCurrentNormalCars(), thisAgent.getID() };
+	private boolean greenTieBreaker(ArrayList<String> greenCandidates) {
+		int[] agentVariables = { thisAgent.getEmergencyVehicles(), thisAgent.getNumberOfVehicles(), thisAgent.getId() };
 
-		for (int i = 1; i < INFO_PRIORITY_LENGTH; i++)
-		{ // i=1 because priority was already evaluated
+		for (int i = 1; i < INFO_PRIORITY_LENGTH; i++) { // i=1 because priority was already evaluated
 			if (greenCandidates.isEmpty())
 				break;
 
-			for (int j = 0; j < allPriorityInformation.size(); j++)
-			{
+			for (int j = 0; j < allPriorityInformation.size(); j++) {
 				if (!greenCandidates.contains(allPriorityInformation.get(j)[ID_POSITION]))
 					continue;
 				int priorityI = Integer.parseInt(allPriorityInformation.get(j)[i]);
@@ -148,18 +115,14 @@ public class StateCommunicationBehaviour extends Behaviour
 		return true;
 	}
 
-	private boolean findIfGreenCandidate(ArrayList<String> greenCandidates)
-	{
+	private boolean findIfGreenCandidate(ArrayList<String> greenCandidates) {
 
-		for (int i = 0; i < allPriorityInformation.size(); i++)
-		{
+		for (int i = 0; i < allPriorityInformation.size(); i++) {
 			double priorityI = Double.parseDouble(allPriorityInformation.get(i)[PRIORITY_VALUE_POSITION]);
-			if (priorityI > priority)
-			{
+			if (priorityI > priority) {
 				return false;
 			}
-			if (priorityI == priority)
-			{
+			if (priorityI == priority) {
 				greenCandidates.add(allPriorityInformation.get(i)[ID_POSITION]);
 			}
 
@@ -167,49 +130,44 @@ public class StateCommunicationBehaviour extends Behaviour
 		return true;
 	}
 
-	private void addPriorityInformation(String aid, String content)
-	{
+	private void addPriorityInformation(String aid, String content) {
 		String[] splitContent = content.split(DELIMITER);
 
 		allPriorityInformation.add(splitContent);
 	}
 
-	private String priorityToString()
-	{
+	private String priorityToString() {
 		String priorityStr = Double.toString(priority);
-		String emergencyVehiclesStr = Integer.toString(thisAgent.getCurrentEmergencyVehicles());
-		String numberOfVehiclesStr = Integer.toString(thisAgent.getCurrentNormalVehicles());
+		String emergencyVehiclesStr = Integer.toString(thisAgent.getEmergencyVehicles());
+		String numberOfVehiclesStr = Integer.toString(thisAgent.getNumberOfVehicles());
 		// TODO peões
-		String idStr = Integer.toString(thisAgent.getID());
+		String idStr = Integer.toString(thisAgent.getId());
 
 		return priorityStr + DELIMITER + emergencyVehiclesStr + DELIMITER + numberOfVehiclesStr + DELIMITER + idStr;
 	}
 
 	@Override
-	public boolean done()
-	{
+	public boolean done() {
 		return step == 3;
 	}
 
-	private double calculatePriority()
-	{
+	private double calculatePriority() {
 		if (thisAgent.hasEmergencyVehicles())
 			return EMERGENCY_PRIORITY;
 
 		if (thisAgent.carRoadRatio() >= 1.0)
 			return ROAD_OVERFLOW_PRIORITY;
 
-		if (thisAgent.getCurrentState() == SemaphoreStates.GREEN)
+		if (thisAgent.getState() == SemaphoreStates.GREEN)
 			return calculatePriorityGreen();
-		else if (thisAgent.getCurrentState() == SemaphoreStates.RED)
+		else if (thisAgent.getState() == SemaphoreStates.RED)
 			return calculatePriorityRed();
 
 		return -1.0; // TODO SE ISTO ACONTECER SOMETHING IS REALLY WRONG.... HOWEVER IT SHOULD
 						// PROCEED AS NORMAL?????
 	}
 
-	private double calculatePriorityGreen()
-	{
+	private double calculatePriorityGreen() {
 		if (thisAgent.getSecondsPassedOnState() >= GREEN_MAX_TIME)
 			return GREEN_MAX_TIME_PRIORITY;
 		else if (thisAgent.getSecondsPassedOnState() >= GREEN_MIN_TIME)
@@ -220,8 +178,7 @@ public class StateCommunicationBehaviour extends Behaviour
 
 	}
 
-	private double calculatePriorityRed()
-	{
+	private double calculatePriorityRed() {
 		if (thisAgent.getSecondsPassedOnState() >= RED_MAX_TIME)
 			return RED_MAX_TIME_PRIORITY;
 
