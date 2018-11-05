@@ -22,20 +22,25 @@ import smartSemaphores.repast.SimulationManager;
 
 public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 {
-	public static float TICKS_PER_SECOND = 1.0f;
+	//Constants
+	public static final float TICKS_PER_SECOND = 1.0f;
+	
+	//Configurable simulation variables and definitions
+	public static SimulationType simulationType = SimulationType.TIMED_AGENTS;
 	public static int HOURS = 5;
 	public static int EXIT_RATE = 3;
 	public static int MAX_TICKS;
-	public static boolean TIMED_AGENTS = true;
 	public static double EMERGENCY_PROBABILITY = 0.001f;
 	public static double PEDESTRIAN_PROBABILITY = 0.15f;
 
+	//JADE containers
 	private ContainerController mainContainer;
 	private ContainerController crossContainerA;
 	private ContainerController crossContainerB;
 	private ContainerController crossContainerC;
 	private ArrayList<RoadAgent> agents;
 
+	//Simulation manager (repast agent)
 	private SimulationManager manager;
 
 	@Override
@@ -61,10 +66,15 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 
 		this.agents = new ArrayList<>();
 
-		if (this.TIMED_AGENTS)
-			launchTimedAgents();
-		else
-			launchSmartAgents();
+		switch (this.simulationType)
+		{
+			case SMART_AGENTS:
+				launchSmartAgents();
+				break;
+			case TIMED_AGENTS:
+				launchTimedAgents();
+				break;
+		}
 
 		int[] sources = { 1, 8, 10, 6, 15, 17 };
 		int[] middles = { 3, 4, 11, 12, 13, 14 };
@@ -137,7 +147,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void launchTimedAgents()
 	{
 		try
@@ -178,7 +188,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 				seq++;
 			}
 
-			// Agents (two sinks per cross)
+			// Sink Agents (two sinks per cross)
 			SinkAgent sinkAgent;
 
 			sinkAgent = new SinkAgent(2);

@@ -8,6 +8,7 @@ import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.util.ContextUtils;
+import smartSemaphores.SimulationType;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
 import smartSemaphores.jade.RoadAgent;
 import smartSemaphores.jade.SemaphoreStates;
@@ -184,7 +185,7 @@ public class SimulationManager
 		if (currentTick == 0)
 			RunEnvironment.getInstance().setScheduleTickDelay(40);
 		
-		if (this.simulation.TIMED_AGENTS)
+		if (this.simulation.simulationType == SimulationType.TIMED_AGENTS)
 		{
 			this.currentActiveCount++;
 			if (this.currentActiveCount == 60)
