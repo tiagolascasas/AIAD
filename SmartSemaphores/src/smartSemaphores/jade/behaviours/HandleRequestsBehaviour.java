@@ -6,11 +6,8 @@ import sajas.core.behaviours.CyclicBehaviour;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.SemaphoricAgent;
 
-public class HandleRequests extends CyclicBehaviour
+public class HandleRequestsBehaviour extends CyclicBehaviour
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6969060109297684076L;
 
 	int step = 0;

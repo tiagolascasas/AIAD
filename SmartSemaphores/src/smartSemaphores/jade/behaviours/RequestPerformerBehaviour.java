@@ -8,11 +8,8 @@ import sajas.core.behaviours.Behaviour;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.SemaphoricAgent;
 
-public class RequestPerformer extends Behaviour
+public class RequestPerformerBehaviour extends Behaviour
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4771134109565630310L;
 	private static final String REQUEST_ID = "Request-priority";
 	private static final String INFORM_ID = "Inform-priority";

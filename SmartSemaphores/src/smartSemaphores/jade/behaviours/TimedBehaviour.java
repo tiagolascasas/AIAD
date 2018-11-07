@@ -1,14 +1,13 @@
 package smartSemaphores.jade.behaviours;
 
-import sajas.core.behaviours.Behaviour;
+import sajas.core.behaviours.CyclicBehaviour;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.TimedSemaphoricAgent;
 import smartSemaphores.repast.SimulationManager;
 
-public class TimedBehaviour extends Behaviour
+public class TimedBehaviour extends CyclicBehaviour
 {
 	private static final long serialVersionUID = -7448453660507939119L;
-	private boolean done = false;
 	
 	@Override
 	public void action()
@@ -21,11 +20,5 @@ public class TimedBehaviour extends Behaviour
 			agent.switchState(SemaphoreStates.GREEN);
 		else
 			agent.switchState(SemaphoreStates.RED);
-	}
-
-	@Override
-	public boolean done()
-	{
-		return done;
 	}
 }

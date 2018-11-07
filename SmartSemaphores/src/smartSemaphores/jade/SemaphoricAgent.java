@@ -7,16 +7,14 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
-import sajas.core.behaviours.TickerBehaviour;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
-import smartSemaphores.jade.behaviours.StateCommunicationBehaviour;
+import smartSemaphores.jade.behaviours.HandleRequestsBehaviour;
+import smartSemaphores.jade.behaviours.RequestPerformerBehaviour;
 import smartSemaphores.repast.EmergencyVehicle;
 import smartSemaphores.repast.NormalVehicle;
 
 public class SemaphoricAgent extends RoadAgent
 {
-	private final static int SECONDS_TO_MS = 1000;
-
 	public final int capacity;
 	private ArrayList<String> connectableAgents;
 	private ArrayList<String> semaphoricAgents;
@@ -52,36 +50,16 @@ public class SemaphoricAgent extends RoadAgent
 	@Override
 	protected void setup()
 	{
-		// Printout a welcome message
-		System.out.println("HELLO");
+		System.out.println("Agent " + this.id + " is online");
 
-		addBehaviour(new TickerBehaviour(this, SECONDS_TO_MS)
-		{
-			private static final long serialVersionUID = 1054989232567187192L;
-
-			protected void onTick()
-			{
-				secondsPassedOnState++;
-			}
-		});
-
-		// TODO verificações
-		addBehaviour(new TickerBehaviour(this, 5 * SECONDS_TO_MS)
-		{
-			private static final long serialVersionUID = -5946442955577436810L;
-
-			protected void onTick()
-			{
-				myAgent.addBehaviour(new StateCommunicationBehaviour());
-			}
-		});
+		addBehaviour(new HandleRequestsBehaviour());
+		addBehaviour(new RequestPerformerBehaviour());
 	}
 
 	@Override
 	protected void takeDown()
 	{
-		// TODO Terminate code
-		System.out.println("TERMINATE CODE");
+		System.out.println("Agent " + this.id + " has been terminated");
 	}
 
 	public void switchState(SemaphoreStates wantedState)
