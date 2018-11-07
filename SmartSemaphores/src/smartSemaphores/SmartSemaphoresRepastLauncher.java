@@ -8,8 +8,6 @@ import jade.wrapper.StaleProxyException;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
-import repast.simphony.engine.schedule.ScheduledMethod;
-import repast.simphony.ui.RunOptionsModel;
 import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
@@ -34,6 +32,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	public static double PEDESTRIAN_PROBABILITY = 0.15f;
 
 	//JADE containers
+	@SuppressWarnings("unused")
 	private ContainerController mainContainer;
 	private ContainerController crossContainerA;
 	private ContainerController crossContainerB;
@@ -66,7 +65,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 
 		this.agents = new ArrayList<>();
 
-		switch (this.simulationType)
+		switch (SmartSemaphoresRepastLauncher.simulationType)
 		{
 			case SMART_AGENTS:
 				launchSmartAgents();

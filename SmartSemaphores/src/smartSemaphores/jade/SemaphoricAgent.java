@@ -21,7 +21,6 @@ public class SemaphoricAgent extends RoadAgent
 	private ArrayList<String> connectableAgents;
 	private ArrayList<String> semaphoricAgents;
 	private SemaphoreStates state = SemaphoreStates.RED;
-	private int id;
 	private int pedestrianCount = 0;
 	private int pedestrianTotalCount = 0;
 	private int secondsPassedOnState = 0;
@@ -94,6 +93,7 @@ public class SemaphoricAgent extends RoadAgent
 		{
 			Context<?> context = ContextUtils.getContext(this);
 			Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);
+			@SuppressWarnings("unchecked")
 			Network<Object> net = (Network<Object>) ContextUtils.getContext(this)
 					.getProjection("SmartSemaphores Road Network");
 			if (wantedState == SemaphoreStates.GREEN)
@@ -174,6 +174,7 @@ public class SemaphoricAgent extends RoadAgent
 		{
 			NormalVehicle car = this.vehicles.element();
 			this.vehicles.remove();
+			removedCars.add(car);
 		}
 
 		return removedCars;

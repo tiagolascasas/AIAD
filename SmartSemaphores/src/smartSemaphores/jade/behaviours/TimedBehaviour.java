@@ -7,6 +7,7 @@ import smartSemaphores.repast.SimulationManager;
 
 public class TimedBehaviour extends Behaviour
 {
+	private static final long serialVersionUID = -7448453660507939119L;
 	private boolean done = false;
 	
 	@Override

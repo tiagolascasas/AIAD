@@ -3,11 +3,9 @@ package smartSemaphores.repast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
-import repast.simphony.util.ContextUtils;
 import smartSemaphores.SimulationType;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
 import smartSemaphores.jade.RoadAgent;
@@ -101,13 +99,13 @@ public class SimulationManager
 			SemaphoricAgent source = this.sourceAgents.get(i);
 			FluxGenerator generator = this.generators.get(source.getAID().getName());
 			int id = source.getID();
-			int increment = generator.calculateY(this.currentTick);
+			int increment = generator.calculateY(SimulationManager.currentTick);
 			
 			ArrayList<NormalVehicle> newCars = new ArrayList<>();
 			
 			int availableSpace = source.getAvailabeSpace(increment);
 			for (int j = 0; j < availableSpace; j++)
-				newCars.add(new NormalVehicle(this.currentTick, id));
+				newCars.add(new NormalVehicle(SimulationManager.currentTick, id));
 			
 			source.addCars(newCars);
 			this.injectedVehicles.addAll(newCars);
@@ -116,14 +114,14 @@ public class SimulationManager
 
 	private void injectEmergencyVehicles()
 	{
-		double prob = simulation.EMERGENCY_PROBABILITY;
+		double prob = SmartSemaphoresRepastLauncher.EMERGENCY_PROBABILITY;
 		
 		for (SemaphoricAgent agent : this.sourceAgents)
 		{
 			double random = Math.random();
 			if (random < prob)
 			{
-				EmergencyVehicle vehicle = new EmergencyVehicle(this.currentTick, agent.getID());
+				EmergencyVehicle vehicle = new EmergencyVehicle(SimulationManager.currentTick, agent.getID());
 				agent.addEmergencyVehicle(vehicle);
 				this.injectedEmergency.add(vehicle);
 			}
@@ -185,15 +183,15 @@ public class SimulationManager
 		if (currentTick == 0)
 			RunEnvironment.getInstance().setScheduleTickDelay(40);
 		
-		if (this.simulation.simulationType == SimulationType.TIMED_AGENTS)
+		if (SmartSemaphoresRepastLauncher.simulationType == SimulationType.TIMED_AGENTS)
 		{
-			this.currentActiveCount++;
-			if (this.currentActiveCount == 60)
+			SimulationManager.currentActiveCount++;
+			if (SimulationManager.currentActiveCount == 60)
 			{
-				this.currentActiveCount = 0;
-				this.currentActiveSequence++;
-				if (this.currentActiveSequence == 5)
-					this.currentActiveSequence = 1;
+				SimulationManager.currentActiveCount = 0;
+				SimulationManager.currentActiveSequence++;
+				if (SimulationManager.currentActiveSequence == 5)
+					SimulationManager.currentActiveSequence = 1;
 			}
 		}
 		
