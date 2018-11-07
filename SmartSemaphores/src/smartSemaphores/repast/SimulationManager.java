@@ -226,5 +226,30 @@ public class SimulationManager
 		System.out.println(this.injectedEmergency.size() + " emergency vehicles entered the simulation");
 		System.out.println("\n" + exitedVehicles + " normal vehicles exited the simulation");
 		System.out.println(exitedEmergency + " emergency vehicles exited the simulation");
+		
+		ArrayList<Vehicle> exitedNormal = getExitedVehicles(this.injectedVehicles);
+		ArrayList<Vehicle> exitedEmer = getExitedVehicles(this.injectedEmergency);
+		
+		TimesTable t1 = new TimesTable(exitedNormal);
+		TimesTable t2 = new TimesTable(exitedEmer);
+		
+		System.out.println("------------------------------");
+		System.out.println("Normal vehicles:");
+		t1.printTableToStdout();
+		System.out.println("------------------------------");
+		System.out.println("Emergency vehicles:");
+		t2.printTableToStdout();
+		System.out.println("------------------------------");
+	}
+
+	private ArrayList<Vehicle> getExitedVehicles(ArrayList<? extends Vehicle> injected)
+	{
+		ArrayList<Vehicle> vehicles = new ArrayList<>();
+		for (Vehicle v : injected)
+		{
+			if (v.hasExited())
+				vehicles.add(v);
+		}
+		return vehicles;
 	}
 }

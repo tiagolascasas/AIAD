@@ -6,6 +6,7 @@ public abstract class Vehicle
 	protected int endTick;
 	protected int originPoint;
 	protected int endPoint;
+	protected boolean exited = false;
 	
 	protected Vehicle(int startTick, int originPoint)
 	{
@@ -31,6 +32,7 @@ public abstract class Vehicle
 	public void setEndTick(int endTick)
 	{
 		this.endTick = endTick;
+		this.exited = true;
 	}
 	
 	public int getElapsedTime()
@@ -56,5 +58,10 @@ public abstract class Vehicle
 	public void setEndPoint(int endPoint)
 	{
 		this.endPoint = endPoint;
+	}
+	
+	public boolean hasExited()
+	{
+		return this.exited;
 	}
 }
