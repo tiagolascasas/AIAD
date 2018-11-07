@@ -66,7 +66,8 @@ public class SimulationManager
 		
 		for (SemaphoricAgent agent : sourceAgents)
 		{
-			FluxGenerator generator = new FluxGenerator(RandomHelper.nextInt());
+			//FluxGeneratorPolynomial generator = new FluxGeneratorPolynomial(RandomHelper.nextInt());
+			FluxGenerator generator = new FluxGeneratorSinusoid(RandomHelper.nextInt());
 			String name = agent.getAID().getName();
 			this.generators.put(name, generator);
 		}
