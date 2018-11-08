@@ -7,6 +7,8 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
+import sajas.core.behaviours.CyclicBehaviour;
+import sajas.core.behaviours.TickerBehaviour;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
 import smartSemaphores.jade.behaviours.HandleRequestsBehaviour;
 import smartSemaphores.jade.behaviours.RequestPerformerBehaviour;
@@ -52,8 +54,24 @@ public class SemaphoricAgent extends RoadAgent
 	{
 		System.out.println("Agent " + this.id + " is online");
 
-		addBehaviour(new HandleRequestsBehaviour());
-		addBehaviour(new RequestPerformerBehaviour());
+		addBehaviour(new CyclicBehaviour() {
+
+			@Override
+			public void action() {
+				addBehaviour(new HandleRequestsBehaviour());
+				
+			}
+			
+		});
+		addBehaviour(new CyclicBehaviour() {
+
+			@Override
+			public void action() {
+				addBehaviour(new RequestPerformerBehaviour());
+				
+			}
+			
+		});
 	}
 
 	@Override
@@ -107,6 +125,11 @@ public class SemaphoricAgent extends RoadAgent
 	public int getSecondsPassedOnState()
 	{
 		return secondsPassedOnState;
+	}
+	
+	public void incrementSecondsOnState()
+	{
+		this.secondsPassedOnState++;
 	}
 
 	/**
@@ -181,6 +204,13 @@ public class SemaphoricAgent extends RoadAgent
 			neighbours.add((RoadAgent) agent);
 		}
 		return neighbours;
+	}
+	
+	public Agent getNeighbourByID(String id)
+	{
+		Context<?> context = ContextUtils.getContext(this);
+		Agent agent = SmartSemaphoresRepastLauncher.getAgentByID(context, id);
+		return agent;
 	}
 
 	@Override

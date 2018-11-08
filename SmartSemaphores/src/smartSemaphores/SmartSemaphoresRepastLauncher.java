@@ -223,7 +223,6 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	public Context<?> build(Context<Object> context)
 	{
 		initSimulation();
-
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("SmartSemaphores Road Network", context, true);
 		netBuilder.buildNetwork();
 
@@ -248,6 +247,16 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 			{
 				return (Agent) obj;
 			}
+		}
+		return null;
+	}
+	
+	public static Agent getAgentByID(Context<?> context, String name)
+	{
+		for (Object obj : context.getObjects(Agent.class))
+		{
+			if (obj instanceof RoadAgent && ((RoadAgent)obj).getID() == Integer.parseInt(name));
+				return (Agent)obj;
 		}
 		return null;
 	}

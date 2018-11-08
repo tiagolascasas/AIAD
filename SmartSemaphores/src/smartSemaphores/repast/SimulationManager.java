@@ -196,6 +196,9 @@ public class SimulationManager
 			}
 		}
 		
+		for (SemaphoricAgent agent : this.semaphoricAgents)
+			agent.incrementSecondsOnState();
+		
 		currentTick++;
 	}
 	

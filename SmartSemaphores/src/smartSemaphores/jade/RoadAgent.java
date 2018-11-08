@@ -12,6 +12,7 @@ public abstract class RoadAgent extends Agent
 	protected int id;
 	protected Queue<NormalVehicle> vehicles;
 	protected Queue<EmergencyVehicle> emergency;
+	protected int elapsedTime = 0;
 	
 	protected RoadAgent(int id)
 	{
@@ -52,5 +53,10 @@ public abstract class RoadAgent extends Agent
 	public static String makeFullName(int id)
 	{
 		return "Agent " + id + "@SmartSemaphores";
+	}
+	
+	public void incrementTime()
+	{
+		this.elapsedTime++;
 	}
 }
