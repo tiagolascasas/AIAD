@@ -8,6 +8,8 @@ import smartSemaphores.jade.SemaphoricAgent;
 
 public class HandleRequestsBehaviour extends CyclicBehaviour
 {
+	private static final String DELIMITER = "-";
+	private static final int INFO_PRIORITY_LENGTH = 4;
 	private static final long serialVersionUID = -6969060109297684076L;
 
 	int step = 0;
@@ -24,8 +26,7 @@ public class HandleRequestsBehaviour extends CyclicBehaviour
 				{
 					double priorityReceived = Double.parseDouble(msg.getContent());
 					double priority = 0.0;
-					// priority = calculatePriority(); usar função disponivel no
-					// STateCommunicationBehaviour
+					priority = PriorityCalculator.calculatePriority((SemaphoricAgent) myAgent);
 					ACLMessage reply = msg.createReply();
 					if (priorityReceived >= priority)
 						reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);

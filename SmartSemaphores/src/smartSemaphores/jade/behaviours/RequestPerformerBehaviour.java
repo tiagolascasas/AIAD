@@ -13,14 +13,17 @@ public class RequestPerformerBehaviour extends Behaviour
 	private static final long serialVersionUID = -4771134109565630310L;
 	private static final String REQUEST_ID = "Request-priority";
 	private static final String INFORM_ID = "Inform-priority";
+
 	int step = 0;
-	private static final double EMERGENCY_PRIORITY = 12.0;
 	int accepted = 0;
 	int repliesCnt = 0;
+	private SemaphoricAgent thisAgent;
 
 	@Override
 	public void action()
 	{
+		thisAgent = (SemaphoricAgent) myAgent;
+
 		switch (step)
 		{
 			case 0:
@@ -30,10 +33,8 @@ public class RequestPerformerBehaviour extends Behaviour
 					return;
 				}
 
-				double priority = 0.0;
-				// priority = calculatePriority(); usar função disponivel no
-				// STateCommunicationBehaviour
-				double ratio = priority / EMERGENCY_PRIORITY; // 12 é o max priority
+				double priority = PriorityCalculator.calculatePriority(thisAgent);
+				double ratio = priority / PriorityCalculator.EMERGENCY_PRIORITY; // 12 é o max priority
 
 				Random generator = new Random(System.currentTimeMillis());
 
@@ -109,5 +110,4 @@ public class RequestPerformerBehaviour extends Behaviour
 	{
 		return step == 3;
 	}
-
 }

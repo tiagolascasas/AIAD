@@ -24,7 +24,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher
 	public static final float TICKS_PER_SECOND = 1.0f;
 	
 	//Configurable simulation variables and definitions
-	public static SimulationType simulationType = SimulationType.TIMED_AGENTS;
+	public static SimulationType simulationType = SimulationType.SMART_AGENTS;
 	public static int HOURS = 5;
 	public static int EXIT_RATE = 3;
 	public static int MAX_TICKS;

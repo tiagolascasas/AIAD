@@ -7,6 +7,7 @@ import sajas.core.AID;
 import sajas.core.behaviours.Behaviour;
 import smartSemaphores.jade.SemaphoreStates;
 
+@Deprecated
 public class StateCommunicationBehaviour extends Behaviour
 {
 	private static final int PRIORITY_VALUE_POSITION = 0;
