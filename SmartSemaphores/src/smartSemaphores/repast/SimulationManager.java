@@ -1,7 +1,5 @@
 package smartSemaphores.repast;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -210,9 +208,14 @@ public class SimulationManager
 		long unixTime = System.currentTimeMillis() / 1000L;
 		String uniqueID = "" + unixTime;
 		
-		this.generateAverageTimesDatasets(uniqueID);
-		this.generateAllTimesDatasets(uniqueID);
-		this.generateSemaphoreDataset(uniqueID);
+		ArrayList<Vehicle> exitedNormal = getExitedVehicles(this.injectedVehicles);
+		ArrayList<Vehicle> exitedEmer = getExitedVehicles(this.injectedEmergency);
+		
+		StatisticReportsCreator.generateVariablesReport(uniqueID);
+		StatisticReportsCreator.generateAverageTimesDatasets(uniqueID, exitedNormal, exitedEmer);
+		StatisticReportsCreator.generateAllTimesDatasets(uniqueID, exitedNormal, exitedEmer);
+		StatisticReportsCreator.generateSemaphoreDataset(uniqueID, this.semaphoricAgents);
+		
 		this.printBasicReportToStdout();
 	}
 
@@ -257,116 +260,6 @@ public class SimulationManager
 		System.out.println("Emergency vehicles:");
 		t2.printTableToStdout();
 		System.out.println("------------------------------");
-	}
-
-	private void generateAverageTimesDatasets(String uniqueID)
-	{
-		ArrayList<Vehicle> exitedNormal = getExitedVehicles(this.injectedVehicles);
-		ArrayList<Vehicle> exitedEmer = getExitedVehicles(this.injectedEmergency);
-
-		TimesTable t1 = new TimesTable(exitedNormal);
-		TimesTable t2 = new TimesTable(exitedEmer);
-
-		String report1 = t1.toString();
-		String report2 = t2.toString();
-
-		String filename = "results/" + uniqueID + "_avg_time_";
-
-		try
-		{
-			PrintWriter f1 = new PrintWriter(filename + "normal.csv");
-			PrintWriter f2 = new PrintWriter(filename + "emergency.csv");
-
-			f1.write("source,sink,average_time\n");
-			f1.write(report1);
-			f2.write("source,sink,average_time\n");
-			f2.write(report2);
-			
-			f1.close();
-			f2.close();
-
-		} catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	private void generateAllTimesDatasets(String uniqueID)
-	{
-		ArrayList<Vehicle> exitedNormal = getExitedVehicles(this.injectedVehicles);
-		ArrayList<Vehicle> exitedEmer = getExitedVehicles(this.injectedEmergency);
-		
-		StringBuilder string1 = new StringBuilder();
-		StringBuilder string2 = new StringBuilder();
-		
-		string1.append("origin,exit,elapsed_time\n");
-		
-		for (Vehicle v : exitedNormal)
-			string1.append(v.getOriginPoint()).append(",")
-					.append(v.getEndPoint()).append(",")
-					.append(v.getElapsedTime()).append("\n");
-		
-		for (Vehicle v : exitedEmer)
-			string2.append(v.getOriginPoint()).append(",")
-					.append(v.getEndPoint()).append(",")
-					.append(v.getElapsedTime()).append("\n");
-		
-		long unixTime = System.currentTimeMillis() / 1000L;
-		String filename = "results/" + uniqueID + "_total_time_";
-		
-		try
-		{
-			PrintWriter f1 = new PrintWriter(filename + "normal.csv");
-			PrintWriter f2 = new PrintWriter(filename + "emergency.csv");
-
-			f1.write(string1.toString());
-			f2.write(string2.toString());
-			
-			f1.close();
-			f2.close();
-
-		} catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}	
-	}
-
-	private void generateSemaphoreDataset(String uniqueID)
-	{
-		HashMap<Integer, ArrayList<SemaphoreStates>> trackers = new HashMap<>();
-		ArrayList<String> header = new ArrayList<>();
-		header.add("tick");
-		
-		for (SemaphoricAgent agent : this.semaphoricAgents)
-		{
-			trackers.put(agent.getID(), agent.getStateTracker());
-			header.add("" + agent.getID());
-		}
-		
-		StringBuilder string = new StringBuilder();
-		string.append(String.join(",", header)).append("\n");
-		
-		for (int i = 0; i < SmartSemaphoresRepastLauncher.MAX_TICKS; i++)
-		{
-			string.append(i);
-			
-			for (Integer id : trackers.keySet())
-				string.append(",").append(trackers.get(id).get(i));
-			string.append("\n");
-		}
-		
-		String filename = "results/" + uniqueID + "_semaphores_state.csv";
-		
-		try
-		{
-			PrintWriter f = new PrintWriter(filename);
-			f.write(string.toString());
-			f.close();
-
-		} catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	private ArrayList<Vehicle> getExitedVehicles(ArrayList<? extends Vehicle> injected)
