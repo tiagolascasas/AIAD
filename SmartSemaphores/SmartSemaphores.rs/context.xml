@@ -1,3 +1,5 @@
 <context id="SmartSemaphores" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://repast.org/scenario/context">
-	<projection type="network" id="SmartSemaphores Road Network"/>
+	<!--  <projection type="network" id="SmartSemaphores Road Network"/> -->
+	<projection type="grid" id="SmartSemaphores Road Grid">
+</projection>
 </context>

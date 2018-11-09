@@ -5,8 +5,8 @@
   <sizeMin>0.0</sizeMin>
   <sizeScale>1.0</sizeScale>
   <color>
-    <float>0.0</float>
-    <float>0.0</float>
+    <float>255</float>
+    <float>255</float>
     <float>0.0</float>
   </color>
   <colorMax>

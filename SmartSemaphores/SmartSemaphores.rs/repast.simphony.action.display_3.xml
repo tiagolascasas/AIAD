@@ -42,7 +42,7 @@
     <hashCode>1508345428</hashCode>
   </schedParams>
   <layoutClassName>repast.simphony.visualization.visualization2D.layout.CircleLayout2D</layoutClassName>
-  <layoutProjection>SmartSemaphores Road Network</layoutProjection>
+  <layoutProjection>SmartSemaphores Road Grid</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
@@ -55,18 +55,39 @@
   </layerOrder>
   <projections>
     <repast.simphony.scenario.data.ProjectionData>
-      <id>SmartSemaphores Road Network</id>
+      <id>SmartSemaphores Road Grid</id>
       <attributes/>
-      <type>network</type>
+      <type>grid</type>
     </repast.simphony.scenario.data.ProjectionData>
   </projections>
+  <visualizationProperties class="repast.simphony.visualization.UnitSizeLayoutProperties">
+    <unitSize>50</unitSize>
+  </visualizationProperties>
   <projectionDescriptors>
     <entry>
-      <string>SmartSemaphores Road Network</string>
-      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+      <string>SmartSemaphores Road Grid</string>
+      <repast.simphony.visualization.grid.GridProjectionDescriptor>
         <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
-        <props/>
-      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <props>
+          <entry>
+            <string>repast.simphony.visualization.grid.GridDecorator</string>
+            <map>
+              <entry>
+                <string>COLOR</string>
+                <int>-16777216</int>
+              </entry>
+              <entry>
+                <string>UNIT_SIZE</string>
+                <float>50</float>
+              </entry>
+              <entry>
+                <string>SHOW</string>
+                <boolean>true</boolean>
+              </entry>
+            </map>
+          </entry>
+		</props>
+      </repast.simphony.visualization.grid.GridProjectionDescriptor>
     </entry>
   </projectionDescriptors>
   <props/>
