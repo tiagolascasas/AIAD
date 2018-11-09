@@ -4,21 +4,21 @@
   <styles>
     <entry>
       <string>smartSemaphores.jade.SemaphoricAgent</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
       <string>smartSemaphores.jade.SinkAgent</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
       <string>smartSemaphores.jade.SemaphoricAgent</string>
-      <null/>
+      <string>smartSemaphores.jade.SemaphoricAgent.style_1.xml</string>
     </entry>
     <entry>
       <string>smartSemaphores.jade.SinkAgent</string>
-      <null/>
+      <string>smartSemaphores.jade.SinkAgent.style_2.xml</string>
     </entry>
   </editedStyles>
   <netStyles>
@@ -41,7 +41,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1036635369</hashCode>
+    <hashCode>-641282779</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>SmartSemaphores Road Grid</layoutProjection>

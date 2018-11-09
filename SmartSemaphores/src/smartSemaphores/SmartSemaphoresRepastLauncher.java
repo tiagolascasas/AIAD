@@ -249,7 +249,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		// implement strict borders so there is no wrapping
 		// multiple occupancy of grid cells is still set to false
 		this.grid = gridFactory.createGrid("SmartSemaphores Road Grid", context,
-				new GridBuilderParameters<Object>(new StickyBorders(), new SimpleGridAdder<Object>(), false, 10, 10));
+				new GridBuilderParameters<Object>(new StickyBorders(), new SimpleGridAdder<Object>(), false, 15, 19));
 
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("SmartSemaphores Road Network", context, true);
 		netBuilder.buildNetwork();
@@ -313,76 +313,76 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		switch (numAgent)
 		{
 			case 1:
-				x = 1;
-				y = 8;
+				x = 3;
+				y = 15;
 				break;
 			case 2:
-				x = 2;
-				y = 9;
+				x = 5;
+				y = 17;
 				break;
 			case 3:
-				x = 1;
-				y = 2;
+				x = 3;
+				y = 5;
 				break;
 			case 4:
-				x = 2;
-				y = 7;
+				x = 5;
+				y = 13;
 				break;
 			case 5:
-				x = 1;
-				y = 0;
+				x = 5;
+				y = 1;
 				break;
 			case 6:
-				x = 2;
-				y = 1;
+				x = 5;
+				y = 3;
 				break;
 			case 7:
-				x = 0;
-				y = 8;
+				x = 1;
+				y = 15;
 				break;
 			case 8:
-				x = 1;
-				y = 7;
+				x = 3;
+				y = 13;
 				break;
 			case 9:
-				x = 0;
-				y = 2;
+				x = 1;
+				y = 3;
 				break;
 			case 10:
-				x = 1;
-				y = 1;
+				x = 3;
+				y = 3;
 				break;
 			case 11:
-				x = 2;
-				y = 8;
+				x = 5;
+				y = 15;
 				break;
 			case 12:
-				x = 7;
-				y = 4;
+				x = 10;
+				y = 10;
 				break;
 			case 13:
-				x = 2;
-				y = 2;
+				x = 5;
+				y = 5;
 				break;
 			case 14:
-				x = 7;
-				y = 5;
+				x = 10;
+				y = 8;
 				break;
 			case 15:
-				x = 8;
-				y = 4;
+				x = 12;
+				y = 10;
 				break;
 			case 16:
-				x = 9;
-				y = 6;
+				x = 13;
+				y = 12;
 				break;
 			case 17:
-				x = 8;
-				y = 5;
+				x = 12;
+				y = 8;
 				break;
 			case 18:
-				x = 9;
-				y = 3;
+				x = 13;
+				y = 6;
 				break;
 			default:
 				return null;
