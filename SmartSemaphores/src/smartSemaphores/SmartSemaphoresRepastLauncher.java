@@ -13,6 +13,7 @@ import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
+import repast.simphony.space.graph.EdgeCreatorFactory;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
@@ -29,18 +30,18 @@ import smartSemaphores.repast.SimulationManager;
 
 public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements ContextBuilder<Object>
 {
-	//Constants
+	// Constants
 	public static final float TICKS_PER_SECOND = 1.0f;
-	
-	//Configurable simulation variables and definitions
-	public static SimulationType simulationType = SimulationType.SMART_AGENTS;
+
+	// Configurable simulation variables and definitions
+	public static SimulationType simulationType = SimulationType.TIMED_AGENTS;
 	public static int HOURS = 5;
 	public static int EXIT_RATE = 3;
 	public static int MAX_TICKS;
 	public static double EMERGENCY_PROBABILITY = 0.001f;
 	public static double PEDESTRIAN_PROBABILITY = 0.15f;
 
-	//JADE containers
+	// JADE containers
 	@SuppressWarnings("unused")
 	private ContainerController mainContainer;
 	private ContainerController crossContainerA;
@@ -48,13 +49,13 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 	private ContainerController crossContainerC;
 	private ArrayList<RoadAgent> agents;
 
-	//Simulation manager (repast agent)
+	// Simulation manager (repast agent)
 	private SimulationManager manager;
-	
-	//Grid
+
+	// Grid
 	private Grid<Object> grid;
-	
-	//Context
+
+	// Context
 	private Context<Object> context;
 
 	@Override
@@ -97,7 +98,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 
 	private void launchSmartAgents()
 	{
-			
+
 		try
 		{
 			// Semaphoric agents on road cross A
@@ -108,9 +109,9 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents, crossAconnectables, 1000);
 				this.crossContainerA.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
-				
+
 				putOnGrid(i, agent);
-				
+
 			}
 
 			// Semaphoric agents on road cross B
@@ -121,7 +122,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents, crossBconnectables, 1000);
 				this.crossContainerB.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
-				
+
 				putOnGrid(i, agent);
 			}
 
@@ -133,12 +134,12 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents, crossCconnectables, 1000);
 				this.crossContainerC.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
-				
+
 				putOnGrid(i, agent);
 			}
 
 			initSinkAgents();
-			
+
 		} catch (StaleProxyException e)
 		{
 			e.printStackTrace();
@@ -160,8 +161,8 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				this.crossContainerA.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 				seq++;
-				
-				putOnGrid(i, agent);				
+
+				putOnGrid(i, agent);
 			}
 
 			// Semaphoric agents on road cross B
@@ -174,7 +175,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				this.crossContainerB.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 				seq++;
-				
+
 				putOnGrid(i, agent);
 			}
 
@@ -188,19 +189,20 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				this.crossContainerC.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 				seq++;
-				
+
 				putOnGrid(i, agent);
 			}
 
 			initSinkAgents();
-			
+
 		} catch (StaleProxyException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
-	private void initSinkAgents() throws StaleProxyException {
+	private void initSinkAgents() throws StaleProxyException
+	{
 		// Sink Agents (two sinks per cross)
 		SinkAgent sinkAgent;
 
@@ -239,20 +241,19 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 	public Context<?> build(Context<Object> context)
 	{
 		this.context = context;
-		
+
 		initSimulation();
+		
+		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
+
+		// implement strict borders so there is no wrapping
+		// multiple occupancy of grid cells is still set to false
+		this.grid = gridFactory.createGrid("SmartSemaphores Road Grid", context,
+				new GridBuilderParameters<Object>(new StickyBorders(), new SimpleGridAdder<Object>(), false, 10, 10));
 
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("SmartSemaphores Road Network", context, true);
 		netBuilder.buildNetwork();
 		
-		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
-
-		//implement strict borders so there is no wrapping
-		//multiple occupancy of grid cells is still set to false
-		this.grid = gridFactory.createGrid("SmartSemaphores Road Grid", context,
-				new GridBuilderParameters<Object>(new StickyBorders(),
-						new SimpleGridAdder<Object>(), false, 10, 10));
-
 		this.manager = new SimulationManager(this);
 		context.add(this.manager);
 
@@ -261,10 +262,10 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 
 	private void initSimulation()
 	{
-		//Parameters parm = RunEnvironment.getInstance().getParameters();
-		//numAgents = (Integer)parm.getValue("numAgents");
-		//zoneDistance = (Double)parm.getValue("zoneDistance");
-		
+		// Parameters parm = RunEnvironment.getInstance().getParameters();
+		// numAgents = (Integer)parm.getValue("numAgents");
+		// zoneDistance = (Double)parm.getValue("zoneDistance");
+
 		MAX_TICKS = (int) (TICKS_PER_SECOND * 3600 * HOURS);
 		RunEnvironment.getInstance().endAt(MAX_TICKS);
 		RunEnvironment.getInstance().setScheduleTickDelay(70);
@@ -281,13 +282,14 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		}
 		return null;
 	}
-	
+
 	public static Agent getAgentByID(Context<?> context, String name)
 	{
 		for (Object obj : context.getObjects(Agent.class))
 		{
-			if (obj instanceof RoadAgent && ((RoadAgent)obj).getID() == Integer.parseInt(name));
-				return (Agent)obj;
+			if (obj instanceof RoadAgent && ((RoadAgent) obj).getID() == Integer.parseInt(name))
+				;
+			return (Agent) obj;
 		}
 		return null;
 	}
@@ -303,80 +305,99 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		}
 		return null;
 	}
-	
-	public Point semaphoreLocation(int numAgent) {
-		
-		int x,y;
-		
-		switch(numAgent) {
-		case 1:
-			x=1; y=8;
-			break;
-		case 2:
-			x=2; y=9;
-			break;
-		case 3:
-			x=1; y=2;
-			break;
-		case 4:
-			x=2; y=7;
-			break;
-		case 5:
-			x=1; y=0;
-			break;
-		case 6:
-			x=2; y=1;
-			break;
-		case 7:
-			x=0; y=8;
-			break;
-		case 8:
-			x=1; y=7;
-			break;
-		case 9:
-			x=0; y=2;
-			break;
-		case 10:
-			x=1; y=1;
-			break;
-		case 11:
-			x=2; y=8;
-			break;
-		case 12:
-			x=7; y=4;
-			break;
-		case 13:
-			x=2; y=2;
-			break;
-		case 14:
-			x=7; y=5;
-			break;
-		case 15:
-			x=8; y=4;
-			break;
-		case 16:
-			x=9; y=6;
-			break;
-		case 17:
-			x=8; y=5;
-			break;
-		case 18:
-			x=9; y=3;
-			break;
-		default: 
-			return null;
+
+	public Point semaphoreLocation(int numAgent)
+	{
+		int x, y;
+
+		switch (numAgent)
+		{
+			case 1:
+				x = 1;
+				y = 8;
+				break;
+			case 2:
+				x = 2;
+				y = 9;
+				break;
+			case 3:
+				x = 1;
+				y = 2;
+				break;
+			case 4:
+				x = 2;
+				y = 7;
+				break;
+			case 5:
+				x = 1;
+				y = 0;
+				break;
+			case 6:
+				x = 2;
+				y = 1;
+				break;
+			case 7:
+				x = 0;
+				y = 8;
+				break;
+			case 8:
+				x = 1;
+				y = 7;
+				break;
+			case 9:
+				x = 0;
+				y = 2;
+				break;
+			case 10:
+				x = 1;
+				y = 1;
+				break;
+			case 11:
+				x = 2;
+				y = 8;
+				break;
+			case 12:
+				x = 7;
+				y = 4;
+				break;
+			case 13:
+				x = 2;
+				y = 2;
+				break;
+			case 14:
+				x = 7;
+				y = 5;
+				break;
+			case 15:
+				x = 8;
+				y = 4;
+				break;
+			case 16:
+				x = 9;
+				y = 6;
+				break;
+			case 17:
+				x = 8;
+				y = 5;
+				break;
+			case 18:
+				x = 9;
+				y = 3;
+				break;
+			default:
+				return null;
 		}
-		
-		return new Point (x,y);
+
+		return new Point(x, y);
 	}
-	
-	private void putOnGrid(int i, Agent agent) {
-		
+
+	private void putOnGrid(int i, Agent agent)
+	{
 		context.add(agent);
 		Point location = semaphoreLocation(i);
-		if(location != null) {
+		if (location != null)
+		{
 			this.grid.moveTo(agent, (int) location.getX(), (int) location.getY());
 		}
-		
 	}
 }
