@@ -1,5 +1,7 @@
 package smartSemaphores.repast;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,7 +18,7 @@ import smartSemaphores.jade.SinkAgent;
 public class SimulationManager
 {
 	public static int currentTick = 0;
-	
+
 	private SmartSemaphoresRepastLauncher simulation;
 	private HashMap<String, FluxGenerator> generators;
 	private HashMap<String, Double> pedestrianProbs;
@@ -26,11 +28,11 @@ public class SimulationManager
 	private ArrayList<SemaphoricAgent> semaphoricAgents;
 	private ArrayList<NormalVehicle> injectedVehicles;
 	private ArrayList<EmergencyVehicle> injectedEmergency;
-	
-	//variables for timed semaphores
+
+	// variables for timed semaphores
 	public static int currentActiveSequence = 1;
 	private static int currentActiveCount = 0;
-	
+
 	public SimulationManager(SmartSemaphoresRepastLauncher simulation)
 	{
 		this.simulation = simulation;
@@ -42,55 +44,56 @@ public class SimulationManager
 		this.injectedVehicles = new ArrayList<>();
 		this.injectedEmergency = new ArrayList<>();
 	}
-	
+
 	public void init(int[] sources, int[] middles, int[] sinks)
 	{
 		for (int i : sources)
 		{
 			sourceAgents.add((SemaphoricAgent) simulation.getAgent(i));
 		}
-		
+
 		for (int i : middles)
 		{
 			middleAgents.add((SemaphoricAgent) simulation.getAgent(i));
 		}
-		
+
 		for (int i : sinks)
 		{
 			sinkAgents.add((SinkAgent) simulation.getAgent(i));
 		}
-		
+
 		this.semaphoricAgents = new ArrayList<>();
 		this.semaphoricAgents.addAll(this.sourceAgents);
 		this.semaphoricAgents.addAll(this.middleAgents);
-		
+
 		for (SemaphoricAgent agent : sourceAgents)
 		{
-			//FluxGeneratorPolynomial generator = new FluxGeneratorPolynomial(RandomHelper.nextInt());
+			// FluxGeneratorPolynomial generator = new
+			// FluxGeneratorPolynomial(RandomHelper.nextInt());
 			FluxGenerator generator = new FluxGeneratorSinusoid(RandomHelper.nextInt());
 			String name = agent.getAID().getName();
 			this.generators.put(name, generator);
 		}
-		
+
 		for (SemaphoricAgent agent : semaphoricAgents)
 		{
 			double prob = Math.random() / 4;
 			this.pedestrianProbs.put(agent.getAID().getName(), prob);
 		}
 	}
-	
+
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step()
 	{
 		updateState();
-		
+
 		injectNormalVehicles();
 		injectEmergencyVehicles();
 		injectPedestrians();
 		transferCars();
-		
+
 		if (currentTick == SmartSemaphoresRepastLauncher.MAX_TICKS)
-			printReportToStandardOutput();
+			generateReport();
 	}
 
 	private void injectNormalVehicles()
@@ -101,13 +104,13 @@ public class SimulationManager
 			FluxGenerator generator = this.generators.get(source.getAID().getName());
 			int id = source.getID();
 			int increment = generator.calculateY(SimulationManager.currentTick);
-			
+
 			ArrayList<NormalVehicle> newCars = new ArrayList<>();
-			
+
 			int availableSpace = source.getAvailabeSpace(increment);
 			for (int j = 0; j < availableSpace; j++)
 				newCars.add(new NormalVehicle(SimulationManager.currentTick, id));
-			
+
 			source.addCars(newCars);
 			this.injectedVehicles.addAll(newCars);
 		}
@@ -116,7 +119,7 @@ public class SimulationManager
 	private void injectEmergencyVehicles()
 	{
 		double prob = SmartSemaphoresRepastLauncher.EMERGENCY_PROBABILITY;
-		
+
 		for (SemaphoricAgent agent : this.sourceAgents)
 		{
 			double random = Math.random();
@@ -127,7 +130,7 @@ public class SimulationManager
 				this.injectedEmergency.add(vehicle);
 			}
 		}
-		
+
 	}
 
 	private void injectPedestrians()
@@ -142,7 +145,7 @@ public class SimulationManager
 					agent.addPedestrian();
 			}
 		}
-		
+
 	}
 
 	private void transferCars()
@@ -153,14 +156,14 @@ public class SimulationManager
 			{
 				ArrayList<RoadAgent> neighbours = agent.getConnectableAgents();
 				int possibilites = neighbours.size();
-				
+
 				for (int i = 0; i < SmartSemaphoresRepastLauncher.EXIT_RATE; i++)
 				{
 					int road = RandomHelper.nextIntFromTo(0, possibilites - 1);
 					RoadAgent targetAgent = neighbours.get(road);
 					int availableSpace = targetAgent.getAvailabeSpace(1);
 					int availableCars = agent.getCurrentNormalCars();
-					
+
 					if (availableSpace == 1 && availableCars > 0)
 					{
 						ArrayList<NormalVehicle> cars = new ArrayList<>();
@@ -168,7 +171,7 @@ public class SimulationManager
 						cars.add(car);
 						targetAgent.addCars(cars);
 					}
-					
+
 					if (agent.getEmergencyVehicles().size() > 0)
 					{
 						EmergencyVehicle vehicle = agent.removeEmergencyVehicle();
@@ -183,7 +186,7 @@ public class SimulationManager
 	{
 		if (currentTick == 0)
 			RunEnvironment.getInstance().setScheduleTickDelay(40);
-		
+
 		if (SmartSemaphoresRepastLauncher.simulationType == SimulationType.TIMED_AGENTS)
 		{
 			SimulationManager.currentActiveCount++;
@@ -195,14 +198,25 @@ public class SimulationManager
 					SimulationManager.currentActiveSequence = 1;
 			}
 		}
-		
+
 		for (SemaphoricAgent agent : this.semaphoricAgents)
 			agent.incrementSecondsOnState();
-		
+
 		currentTick++;
 	}
-	
-	private void printReportToStandardOutput()
+
+	private void generateReport()
+	{
+		long unixTime = System.currentTimeMillis() / 1000L;
+		String uniqueID = "" + unixTime;
+		
+		this.generateAverageTimesDatasets(uniqueID);
+		this.generateAllTimesDatasets(uniqueID);
+		this.generateSemaphoreDataset(uniqueID);
+		this.printBasicReportToStdout();
+	}
+
+	private void printBasicReportToStdout()
 	{
 		for (SemaphoricAgent agent : this.semaphoricAgents)
 		{
@@ -211,10 +225,10 @@ public class SimulationManager
 			String id = agent.getAID().getName();
 			System.out.println(id + ": " + currentCars + " currently waiting here. " + pedCount + " pedestrians crossed");
 		}
-		
+
 		int exitedVehicles = 0;
 		int exitedEmergency = 0;
-		
+
 		for (SinkAgent sink : this.sinkAgents)
 		{
 			int currentCars = sink.getCurrentNormalVehicles();
@@ -224,18 +238,18 @@ public class SimulationManager
 			exitedVehicles += currentCars;
 			exitedEmergency += currentEmergency;
 		}
-		
+
 		System.out.println("\n" + this.injectedVehicles.size() + " normal vehicles entered the simulation");
 		System.out.println(this.injectedEmergency.size() + " emergency vehicles entered the simulation");
 		System.out.println("\n" + exitedVehicles + " normal vehicles exited the simulation");
 		System.out.println(exitedEmergency + " emergency vehicles exited the simulation");
-		
+
 		ArrayList<Vehicle> exitedNormal = getExitedVehicles(this.injectedVehicles);
 		ArrayList<Vehicle> exitedEmer = getExitedVehicles(this.injectedEmergency);
-		
+
 		TimesTable t1 = new TimesTable(exitedNormal);
 		TimesTable t2 = new TimesTable(exitedEmer);
-		
+
 		System.out.println("------------------------------");
 		System.out.println("Normal vehicles:");
 		t1.printTableToStdout();
@@ -243,6 +257,116 @@ public class SimulationManager
 		System.out.println("Emergency vehicles:");
 		t2.printTableToStdout();
 		System.out.println("------------------------------");
+	}
+
+	private void generateAverageTimesDatasets(String uniqueID)
+	{
+		ArrayList<Vehicle> exitedNormal = getExitedVehicles(this.injectedVehicles);
+		ArrayList<Vehicle> exitedEmer = getExitedVehicles(this.injectedEmergency);
+
+		TimesTable t1 = new TimesTable(exitedNormal);
+		TimesTable t2 = new TimesTable(exitedEmer);
+
+		String report1 = t1.toString();
+		String report2 = t2.toString();
+
+		String filename = "results/" + uniqueID + "_avg_time_";
+
+		try
+		{
+			PrintWriter f1 = new PrintWriter(filename + "normal.csv");
+			PrintWriter f2 = new PrintWriter(filename + "emergency.csv");
+
+			f1.write("source,sink,average_time\n");
+			f1.write(report1);
+			f2.write("source,sink,average_time\n");
+			f2.write(report2);
+			
+			f1.close();
+			f2.close();
+
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void generateAllTimesDatasets(String uniqueID)
+	{
+		ArrayList<Vehicle> exitedNormal = getExitedVehicles(this.injectedVehicles);
+		ArrayList<Vehicle> exitedEmer = getExitedVehicles(this.injectedEmergency);
+		
+		StringBuilder string1 = new StringBuilder();
+		StringBuilder string2 = new StringBuilder();
+		
+		string1.append("origin,exit,elapsed_time\n");
+		
+		for (Vehicle v : exitedNormal)
+			string1.append(v.getOriginPoint()).append(",")
+					.append(v.getEndPoint()).append(",")
+					.append(v.getElapsedTime()).append("\n");
+		
+		for (Vehicle v : exitedEmer)
+			string2.append(v.getOriginPoint()).append(",")
+					.append(v.getEndPoint()).append(",")
+					.append(v.getElapsedTime()).append("\n");
+		
+		long unixTime = System.currentTimeMillis() / 1000L;
+		String filename = "results/" + uniqueID + "_total_time_";
+		
+		try
+		{
+			PrintWriter f1 = new PrintWriter(filename + "normal.csv");
+			PrintWriter f2 = new PrintWriter(filename + "emergency.csv");
+
+			f1.write(string1.toString());
+			f2.write(string2.toString());
+			
+			f1.close();
+			f2.close();
+
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}	
+	}
+
+	private void generateSemaphoreDataset(String uniqueID)
+	{
+		HashMap<Integer, ArrayList<SemaphoreStates>> trackers = new HashMap<>();
+		ArrayList<String> header = new ArrayList<>();
+		header.add("tick");
+		
+		for (SemaphoricAgent agent : this.semaphoricAgents)
+		{
+			trackers.put(agent.getID(), agent.getStateTracker());
+			header.add("" + agent.getID());
+		}
+		
+		StringBuilder string = new StringBuilder();
+		string.append(String.join(",", header)).append("\n");
+		
+		for (int i = 0; i < SmartSemaphoresRepastLauncher.MAX_TICKS; i++)
+		{
+			string.append(i);
+			
+			for (Integer id : trackers.keySet())
+				string.append(",").append(trackers.get(id).get(i));
+			string.append("\n");
+		}
+		
+		String filename = "results/" + uniqueID + "_semaphores_state.csv";
+		
+		try
+		{
+			PrintWriter f = new PrintWriter(filename);
+			f.write(string.toString());
+			f.close();
+
+		} catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private ArrayList<Vehicle> getExitedVehicles(ArrayList<? extends Vehicle> injected)

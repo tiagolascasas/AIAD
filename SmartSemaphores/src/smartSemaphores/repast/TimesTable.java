@@ -64,4 +64,19 @@ public class TimesTable
 			sum += i;
 		return (int)((float)sum / (float)times.size());
 	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder string = new StringBuilder();
+		for (Integer source : this.table.keySet())
+		{
+			for (Integer sink : this.table.get(source).keySet())
+			{
+				int average = getAverage(this.table.get(source).get(sink));
+				string.append(source + "," + sink + "," + average + "\n");
+			}
+		}
+		return string.toString();
+	}
 }

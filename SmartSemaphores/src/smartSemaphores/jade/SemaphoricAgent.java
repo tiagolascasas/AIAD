@@ -24,6 +24,7 @@ public class SemaphoricAgent extends RoadAgent
 	private int pedestrianCount = 0;
 	private int pedestrianTotalCount = 0;
 	private int secondsPassedOnState = 0;
+	private ArrayList<SemaphoreStates> stateTracker;
 
 	public SemaphoricAgent(int id, int[] semaphoricIDs, int[] connectableIDs, int capacity)
 	{
@@ -47,6 +48,8 @@ public class SemaphoricAgent extends RoadAgent
 		this.capacity = capacity;
 		this.vehicles = new LinkedList<>();
 		this.emergency = new LinkedList<>();
+		this.stateTracker = new ArrayList<>();
+		this.stateTracker.add(this.state);
 	}
 
 	@Override
@@ -130,6 +133,7 @@ public class SemaphoricAgent extends RoadAgent
 	public void incrementSecondsOnState()
 	{
 		this.secondsPassedOnState++;
+		this.stateTracker.add(this.state);
 	}
 
 	/**
@@ -244,5 +248,10 @@ public class SemaphoricAgent extends RoadAgent
 	public int getPedestrianTotalCount()
 	{
 		return pedestrianTotalCount;
+	}
+	
+	public ArrayList<SemaphoreStates> getStateTracker()
+	{
+		return this.stateTracker;
 	}
 }
