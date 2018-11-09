@@ -137,43 +137,11 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				putOnGrid(i, agent);
 			}
 
-			// Agents (two sinks per cross)
-			SinkAgent sinkAgent;
-
-			sinkAgent = new SinkAgent(2);
-			this.crossContainerA.acceptNewAgent("Agent 2", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(7);
-			this.crossContainerA.acceptNewAgent("Agent 7", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(5);
-			this.crossContainerB.acceptNewAgent("Agent 5", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(9);
-			this.crossContainerB.acceptNewAgent("Agent 9", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(16);
-			this.crossContainerC.acceptNewAgent("Agent 16", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(18);
-			this.crossContainerC.acceptNewAgent("Agent 18", sinkAgent).start();
-			this.agents.add(sinkAgent);
+			initSinkAgents();
+			
 		} catch (StaleProxyException e)
 		{
 			e.printStackTrace();
-		}
-	}
-
-	private void putOnGrid(int i, SemaphoricAgent agent) {
-		context.add(agent);
-		Point location = semaphoreLocation(i);
-		if(location != null) {
-			this.grid.moveTo(agent, (int) location.getX(), (int) location.getY());
 		}
 	}
 
@@ -224,36 +192,47 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 				putOnGrid(i, agent);
 			}
 
-			// Sink Agents (two sinks per cross)
-			SinkAgent sinkAgent;
-
-			sinkAgent = new SinkAgent(2);
-			this.crossContainerA.acceptNewAgent("Agent 2", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(7);
-			this.crossContainerA.acceptNewAgent("Agent 7", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(5);
-			this.crossContainerB.acceptNewAgent("Agent 5", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(9);
-			this.crossContainerB.acceptNewAgent("Agent 9", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(16);
-			this.crossContainerC.acceptNewAgent("Agent 16", sinkAgent).start();
-			this.agents.add(sinkAgent);
-
-			sinkAgent = new SinkAgent(18);
-			this.crossContainerC.acceptNewAgent("Agent 18", sinkAgent).start();
-			this.agents.add(sinkAgent);
+			initSinkAgents();
+			
 		} catch (StaleProxyException e)
 		{
 			e.printStackTrace();
 		}
+	}
+
+	private void initSinkAgents() throws StaleProxyException {
+		// Sink Agents (two sinks per cross)
+		SinkAgent sinkAgent;
+
+		sinkAgent = new SinkAgent(2);
+		this.crossContainerA.acceptNewAgent("Agent 2", sinkAgent).start();
+		this.agents.add(sinkAgent);
+		putOnGrid(2, sinkAgent);
+
+		sinkAgent = new SinkAgent(7);
+		this.crossContainerA.acceptNewAgent("Agent 7", sinkAgent).start();
+		this.agents.add(sinkAgent);
+		putOnGrid(7, sinkAgent);
+
+		sinkAgent = new SinkAgent(5);
+		this.crossContainerB.acceptNewAgent("Agent 5", sinkAgent).start();
+		this.agents.add(sinkAgent);
+		putOnGrid(5, sinkAgent);
+
+		sinkAgent = new SinkAgent(9);
+		this.crossContainerB.acceptNewAgent("Agent 9", sinkAgent).start();
+		this.agents.add(sinkAgent);
+		putOnGrid(9, sinkAgent);
+
+		sinkAgent = new SinkAgent(16);
+		this.crossContainerC.acceptNewAgent("Agent 16", sinkAgent).start();
+		this.agents.add(sinkAgent);
+		putOnGrid(16, sinkAgent);
+
+		sinkAgent = new SinkAgent(18);
+		this.crossContainerC.acceptNewAgent("Agent 18", sinkAgent).start();
+		this.agents.add(sinkAgent);
+		putOnGrid(18, sinkAgent);
 	}
 
 	@Override
@@ -272,7 +251,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		//multiple occupancy of grid cells is still set to false
 		this.grid = gridFactory.createGrid("SmartSemaphores Road Grid", context,
 				new GridBuilderParameters<Object>(new StickyBorders(),
-						new SimpleGridAdder<Object>(), false, 13, 10));
+						new SimpleGridAdder<Object>(), false, 10, 10));
 
 		this.manager = new SimulationManager(this);
 		context.add(this.manager);
@@ -331,45 +310,73 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		
 		switch(numAgent) {
 		case 1:
-			x=0; y=9;
+			x=1; y=8;
+			break;
+		case 2:
+			x=2; y=9;
 			break;
 		case 3:
-			x=0; y=2;
+			x=1; y=2;
 			break;
 		case 4:
 			x=2; y=7;
 			break;
+		case 5:
+			x=1; y=0;
+			break;
 		case 6:
-			x=2; y=0;
+			x=2; y=1;
+			break;
+		case 7:
+			x=0; y=8;
 			break;
 		case 8:
-			x=0; y=7;
+			x=1; y=7;
+			break;
+		case 9:
+			x=0; y=2;
 			break;
 		case 10:
-			x=0; y=0;
+			x=1; y=1;
 			break;
 		case 11:
-			x=2; y=9;
+			x=2; y=8;
 			break;
 		case 12:
-			x=10; y=3;
+			x=7; y=4;
 			break;
 		case 13:
 			x=2; y=2;
 			break;
 		case 14:
-			x=10; y=5;
+			x=7; y=5;
 			break;
 		case 15:
-			x=12; y=3;
+			x=8; y=4;
+			break;
+		case 16:
+			x=9; y=6;
 			break;
 		case 17:
-			x=12; y=5;
+			x=8; y=5;
+			break;
+		case 18:
+			x=9; y=3;
 			break;
 		default: 
 			return null;
 		}
 		
 		return new Point (x,y);
+	}
+	
+	private void putOnGrid(int i, Agent agent) {
+		
+		context.add(agent);
+		Point location = semaphoreLocation(i);
+		if(location != null) {
+			this.grid.moveTo(agent, (int) location.getX(), (int) location.getY());
+		}
+		
 	}
 }
