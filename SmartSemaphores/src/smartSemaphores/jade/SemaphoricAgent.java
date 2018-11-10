@@ -53,9 +53,9 @@ public class SemaphoricAgent extends RoadAgent {
 	protected void setup() {
 		System.out.println("Agent " + this.id + " is online");
 
-		addBehaviour(new HandleRequestsBehaviour());
-		addBehaviour(new RequestPerformerBehaviour());
-		// addBehaviour(new StateCommunicationBehaviour());
+		// addBehaviour(new HandleRequestsBehaviour());
+		// addBehaviour(new RequestPerformerBehaviour());
+		addBehaviour(new StateCommunicationBehaviour());
 	}
 
 	@Override
