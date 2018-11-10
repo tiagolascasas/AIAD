@@ -53,9 +53,9 @@ public class SemaphoricAgent extends RoadAgent {
 	protected void setup() {
 		System.out.println("Agent " + this.id + " is online");
 
-		// addBehaviour(new HandleRequestsBehaviour());
-		// addBehaviour(new RequestPerformerBehaviour());
-		addBehaviour(new StateCommunicationBehaviour());
+		addBehaviour(new HandleRequestsBehaviour());
+		addBehaviour(new RequestPerformerBehaviour());
+		// addBehaviour(new StateCommunicationBehaviour());
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class SemaphoricAgent extends RoadAgent {
 	public void switchState(SemaphoreStates wantedState) {
 		if (wantedState == this.state)
 			return;
-		System.out.println("Agent" +  Integer.toString(this.id)  +"Changing state to" + this.state.toString());
+		System.out.println("Agent" + Integer.toString(this.id) + "Changing state to" + this.state.toString());
 		for (String agentName : this.connectableAgents) {
 			Context<?> context = ContextUtils.getContext(this);
 			Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);

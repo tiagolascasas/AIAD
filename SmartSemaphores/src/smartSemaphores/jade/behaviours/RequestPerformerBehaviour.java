@@ -3,6 +3,7 @@ package smartSemaphores.jade.behaviours;
 import java.util.Random;
 
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import sajas.core.AID;
 import sajas.core.behaviours.Behaviour;
 import sajas.core.behaviours.CyclicBehaviour;
@@ -50,28 +51,26 @@ public class RequestPerformerBehaviour extends CyclicBehaviour {
 				requestMSG.setConversationId(REQUEST_ID);
 				myAgent.send(requestMSG);
 				step = 1;
-			} else
-				step = 0;
+			}
 
 			break;
 		case 1:
 			System.out.println("RequestPerformer1");
-			ACLMessage reply = myAgent.receive();
-			if (reply != null) {
-				// Reply received
-				if (reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL
-						|| reply.getPerformative() == ACLMessage.REJECT_PROPOSAL) {
-					repliesCnt++;
-					if (reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL)
-						accepted++;
-				}
+			ACLMessage reply;
+			MessageTemplate mt = MessageTemplate.or(MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL),
+					MessageTemplate.MatchPerformative(ACLMessage.REJECT_PROPOSAL));
+			
+			while ((reply = myAgent.receive(mt)) != null) {
+
+				repliesCnt++;
+				if (reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL)
+					accepted++;
 
 				if (repliesCnt >= ((SemaphoricAgent) myAgent).getNeighbours().size()) {
 					step = 2;
 				}
-			} else {
-				block();
 			}
+
 			break;
 		case 2:
 			System.out.println("RequestPerformer2");
