@@ -68,6 +68,7 @@ public class RequestPerformerBehaviour extends CyclicBehaviour {
 
 				if (repliesCnt >= ((SemaphoricAgent) myAgent).getNeighbours().size()) {
 					step = 2;
+					break;
 				}
 			}
 
