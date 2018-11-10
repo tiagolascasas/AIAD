@@ -14,7 +14,7 @@ public final class PriorityCalculator
 
 	private static final int RED_MAX_TIME = 180;
 	private static final int GREEN_MAX_TIME = 120;
-	private static final int GREEN_MIN_TIME = 20;
+	private static final int GREEN_MIN_TIME = 15;
 
 	public static double calculatePriority(SemaphoricAgent thisAgent)
 	{

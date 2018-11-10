@@ -66,7 +66,7 @@ public class SemaphoricAgent extends RoadAgent {
 	public void switchState(SemaphoreStates wantedState) {
 		if (wantedState == this.state)
 			return;
-
+		System.out.println("Agent" +  Integer.toString(this.id)  +"Changing state to" + this.state.toString());
 		for (String agentName : this.connectableAgents) {
 			Context<?> context = ContextUtils.getContext(this);
 			Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);
@@ -155,7 +155,7 @@ public class SemaphoricAgent extends RoadAgent {
 
 		if (this.vehicles.size() > 0) {
 			car = this.vehicles.element();
-			this.vehicles.remove();
+			this.vehicles.remove(car);
 		}
 		return car;
 	}

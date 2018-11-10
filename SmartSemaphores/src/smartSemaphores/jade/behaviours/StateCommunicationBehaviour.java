@@ -30,7 +30,7 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 
 	private static final int RED_MAX_TIME = 180;
 	private static final int GREEN_MAX_TIME = 120;
-	private static final int GREEN_MIN_TIME = 20;
+	private static final int GREEN_MIN_TIME = 15;
 
 	private ArrayList<String[]> allPriorityInformation;
 
@@ -48,7 +48,7 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 			case 0:
 				System.out.println("Chego ao 0");
 				allPriorityInformation= new ArrayList<>();
-				this.priority = calculatePriority();
+				this.priority = PriorityCalculator.calculatePriority(thisAgent);
 				ACLMessage InformMsg = new ACLMessage(ACLMessage.INFORM);
 				for (int i = 0; i < thisAgent.getNeighbours().size(); ++i)
 				{
@@ -127,9 +127,12 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 
 	private boolean findIfGreenCandidate(ArrayList<String> greenCandidates)
 	{
-		for (int i = 0; i < allPriorityInformation.size(); i++)
+		for (int i = 0; i < allPriorityInformation.size(); i++) {
+			System.out.print(Integer.toString(i));
 			for(int j=0; j<INFO_PRIORITY_LENGTH;j++)
-				System.out.println(Integer.toString(i) + "-" + allPriorityInformation.get(i)[j]);
+				System.out.print("-" + allPriorityInformation.get(i)[j]);
+			System.out.println();
+		}
 
 		for (int i = 0; i < allPriorityInformation.size(); i++)
 		{
@@ -166,41 +169,5 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 	}
 
 
-	private double calculatePriority()
-	{
-		if (thisAgent.hasEmergencyVehicles())
-			return EMERGENCY_PRIORITY;
-
-		if (thisAgent.carRoadRatio() >= 1.0)
-			return ROAD_OVERFLOW_PRIORITY;
-
-		if (thisAgent.getCurrentState() == SemaphoreStates.GREEN)
-			return calculatePriorityGreen();
-		else if (thisAgent.getCurrentState() == SemaphoreStates.RED)
-			return calculatePriorityRed();
-
-		return -1.0; // TODO SE ISTO ACONTECER SOMETHING IS REALLY WRONG.... HOWEVER IT SHOULD
-						// PROCEED AS NORMAL?????
-	}
-
-	private double calculatePriorityGreen()
-	{
-		if (thisAgent.getSecondsPassedOnState() >= GREEN_MAX_TIME)
-			return GREEN_MAX_TIME_PRIORITY;
-		else if (thisAgent.getSecondsPassedOnState() >= GREEN_MIN_TIME)
-			return GREEN_MIN_TIME_PRIORITY;
-		else
-			return ((-0.0002 * Math.pow(thisAgent.getSecondsPassedOnState(), 2))
-					- (0.0243 * thisAgent.getSecondsPassedOnState()) + 5.7327) + (thisAgent.carRoadRatio() * 5);
-
-	}
-
-	private double calculatePriorityRed()
-	{
-		if (thisAgent.getSecondsPassedOnState() >= RED_MAX_TIME)
-			return RED_MAX_TIME_PRIORITY;
-
-		return ((0.0002 * Math.pow(thisAgent.getSecondsPassedOnState(), 2))
-				+ (0.0005 * thisAgent.getSecondsPassedOnState()) - 0.0578) + (thisAgent.carRoadRatio() * 5);
-	}
+	
 }
