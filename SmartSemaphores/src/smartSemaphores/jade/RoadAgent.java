@@ -51,6 +51,6 @@ public abstract class RoadAgent extends Agent
 	
 	public static String makeFullName(int id)
 	{
-		return "Agent " + id + "@SmartSemaphores";
+		return "Agent " + id;
 	}
 }

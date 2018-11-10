@@ -20,6 +20,7 @@ public class HandleRequestsBehaviour extends CyclicBehaviour
 		switch (step)
 		{
 			case 0:
+				System.out.println("HandleRequest0");
 				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.PROPOSE);
 				ACLMessage msg = myAgent.receive(mt);
 				if (msg != null)
@@ -38,6 +39,7 @@ public class HandleRequestsBehaviour extends CyclicBehaviour
 					block();
 				break;
 			case 1:
+				System.out.println("HandleRequest1");
 				ACLMessage informMSG = myAgent.receive();
 				if (informMSG != null && (informMSG.getPerformative() == ACLMessage.CONFIRM
 						|| informMSG.getPerformative() == ACLMessage.DISCONFIRM))

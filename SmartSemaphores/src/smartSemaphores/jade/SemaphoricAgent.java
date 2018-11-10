@@ -10,6 +10,7 @@ import sajas.core.Agent;
 import smartSemaphores.SmartSemaphoresRepastLauncher;
 import smartSemaphores.jade.behaviours.HandleRequestsBehaviour;
 import smartSemaphores.jade.behaviours.RequestPerformerBehaviour;
+import smartSemaphores.jade.behaviours.StateCommunicationBehaviour;
 import smartSemaphores.repast.EmergencyVehicle;
 import smartSemaphores.repast.NormalVehicle;
 
@@ -52,8 +53,9 @@ public class SemaphoricAgent extends RoadAgent
 	{
 		System.out.println("Agent " + this.id + " is online");
 
-		addBehaviour(new HandleRequestsBehaviour());
-		addBehaviour(new RequestPerformerBehaviour());
+		//addBehaviour(new HandleRequestsBehaviour());
+		//addBehaviour(new RequestPerformerBehaviour());
+		addBehaviour(new StateCommunicationBehaviour()); 
 	}
 
 	@Override
@@ -66,7 +68,7 @@ public class SemaphoricAgent extends RoadAgent
 	{
 		if (wantedState == this.state)
 			return;
-
+		System.out.println("Changing state");
 		for (String agentName : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);
@@ -214,5 +216,9 @@ public class SemaphoricAgent extends RoadAgent
 	public int getPedestrianTotalCount()
 	{
 		return pedestrianTotalCount;
+	}
+	
+	public void increaseSecondsPassedOnState() {
+		this.secondsPassedOnState++;
 	}
 }
