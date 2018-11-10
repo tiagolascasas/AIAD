@@ -4,57 +4,46 @@ import java.util.Random;
 
 import jade.lang.acl.ACLMessage;
 import sajas.core.AID;
-import sajas.core.Agent;
 import sajas.core.behaviours.Behaviour;
 import sajas.core.behaviours.CyclicBehaviour;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.SemaphoricAgent;
 
-public class RequestPerformerBehaviour extends Behaviour {
+public class RequestPerformerBehaviour extends CyclicBehaviour {
 	private static final long serialVersionUID = -4771134109565630310L;
 	private static final String REQUEST_ID = "Request-priority";
 	private static final String INFORM_ID = "Inform-priority";
 
-	int step;
-	int accepted;
-	int repliesCnt;
+	int step = 0;
+	int accepted = 0;
+	int repliesCnt = 0;
 	private SemaphoricAgent thisAgent;
-
-	public RequestPerformerBehaviour() {
-		super();
-		step = 0;
-		accepted = 0;
-		repliesCnt = 0;
-	}
 
 	@Override
 	public void action() {
-		System.out.println(step);
 		thisAgent = (SemaphoricAgent) myAgent;
 
 		switch (step) {
 		case 0:
-			if (((SemaphoricAgent) myAgent).getCurrentState() == SemaphoreStates.GREEN) {
-				step = 3;
+			System.out.println("RequestPerformer0");
+			if (((SemaphoricAgent) myAgent).getCurrentState().equals(SemaphoreStates.GREEN)) {
 				return;
 			}
 
 			double priority = PriorityCalculator.calculatePriority(thisAgent);
+
 			double ratio = priority / PriorityCalculator.EMERGENCY_PRIORITY; // 12 é o max priority
 
 			Random generator = new Random(System.currentTimeMillis());
 
 			if (generator.nextDouble() <= ratio) {
+
 				ACLMessage requestMSG = new ACLMessage(ACLMessage.PROPOSE);
 
 				for (int i = 0; i < ((SemaphoricAgent) myAgent).getNeighbours().size(); i++) {
+
 					String name = ((SemaphoricAgent) myAgent).getNeighbours().get(i);
-
-					String id = name.replaceAll("\\D+", "");
-					Agent neighbour = thisAgent.getNeighbourByID(id);
-
-					requestMSG.addReceiver(neighbour.getAID());
-					// requestMSG.addReceiver(new AID(name, false));
+					requestMSG.addReceiver(new AID(name, AID.ISLOCALNAME));
 				}
 
 				requestMSG.setContent(Double.toString(priority));
@@ -62,10 +51,11 @@ public class RequestPerformerBehaviour extends Behaviour {
 				myAgent.send(requestMSG);
 				step = 1;
 			} else
-				step = 3;
+				step = 0;
 
 			break;
 		case 1:
+			System.out.println("RequestPerformer1");
 			ACLMessage reply = myAgent.receive();
 			if (reply != null) {
 				// Reply received
@@ -84,6 +74,7 @@ public class RequestPerformerBehaviour extends Behaviour {
 			}
 			break;
 		case 2:
+			System.out.println("RequestPerformer2");
 			ACLMessage informMSG;
 			if (accepted >= repliesCnt) {
 				informMSG = new ACLMessage(ACLMessage.CONFIRM);
@@ -93,19 +84,15 @@ public class RequestPerformerBehaviour extends Behaviour {
 
 			for (int i = 0; i < ((SemaphoricAgent) myAgent).getNeighbours().size(); i++) {
 				String name = ((SemaphoricAgent) myAgent).getNeighbours().get(i);
-				informMSG.addReceiver(new AID(name, false));
+				informMSG.addReceiver(new AID(name, AID.ISLOCALNAME));
 			}
 			informMSG.setConversationId(INFORM_ID);
 			myAgent.send(informMSG);
-			step = 3;
+			step = 0;
+			accepted = 0;
+			repliesCnt = 0;
 			break;
 		}
-	}
-
-	@Override
-	public boolean done() {
-		// TODO Auto-generated method stub
-		return step == 3;
 	}
 
 }

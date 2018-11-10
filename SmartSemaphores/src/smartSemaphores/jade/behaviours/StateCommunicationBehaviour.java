@@ -5,10 +5,11 @@ import smartSemaphores.jade.SemaphoricAgent;
 import jade.lang.acl.ACLMessage;
 import sajas.core.AID;
 import sajas.core.behaviours.Behaviour;
+import sajas.core.behaviours.CyclicBehaviour;
 import smartSemaphores.jade.SemaphoreStates;
 
-@Deprecated
-public class StateCommunicationBehaviour extends Behaviour
+
+public class StateCommunicationBehaviour extends CyclicBehaviour
 {
 	private static final int PRIORITY_VALUE_POSITION = 0;
 
@@ -18,7 +19,7 @@ public class StateCommunicationBehaviour extends Behaviour
 
 	private static final long serialVersionUID = 2495229105259679220L;
 
-	private static final String DELIMITER = "-";
+	private static final String DELIMITER = "/";
 	private static final int INFO_PRIORITY_LENGTH = 4;
 
 	private static final double EMERGENCY_PRIORITY = 12.0;
@@ -45,16 +46,13 @@ public class StateCommunicationBehaviour extends Behaviour
 		switch (step)
 		{
 			case 0:
+				System.out.println("Chego ao 0");
+				allPriorityInformation= new ArrayList<>();
 				this.priority = calculatePriority();
 				ACLMessage InformMsg = new ACLMessage(ACLMessage.INFORM);
 				for (int i = 0; i < thisAgent.getNeighbours().size(); ++i)
 				{
-					if (((SemaphoricAgent) myAgent).getNeighbours().get(i) == myAgent.getAID().getName())
-						continue;
-					InformMsg.addReceiver(new AID(thisAgent.getNeighbours().get(i), AID.ISLOCALNAME)); // TODO recheck
-																										// if
-																										// AID is
-																										// full name
+					InformMsg.addReceiver(new AID(thisAgent.getNeighbours().get(i), AID.ISLOCALNAME)); 
 				}
 				InformMsg.setContent(priorityToString());
 				InformMsg.setConversationId(CONVERSATION_ID);
@@ -62,14 +60,17 @@ public class StateCommunicationBehaviour extends Behaviour
 				step++;
 				break;
 			case 1:
+				System.out.println("Chego ao 1");
 				ACLMessage msg = myAgent.receive();
 				if (msg != null && msg.getConversationId().equals(CONVERSATION_ID))
 				{
 					repliesCnt++;
+					System.out.println(msg.getSender().getName() + "-" +msg.getContent() );
 					addPriorityInformation(msg.getSender().getName(), msg.getContent());
-					if (repliesCnt >= thisAgent.getNeighbours().size()-1)
+					if (repliesCnt >= thisAgent.getNeighbours().size())
 					{
-						step++;
+						step=2;
+						repliesCnt=0;
 					}
 				} else
 				{
@@ -77,6 +78,7 @@ public class StateCommunicationBehaviour extends Behaviour
 				}
 				break;
 			case 2:
+				System.out.println("Chego ao 2");
 				// Decidir se tem de mudar o estado - Descobrir sem�foro com maior prioridade
 				ArrayList<String> greenCandidates = new ArrayList<>();
 
@@ -92,7 +94,7 @@ public class StateCommunicationBehaviour extends Behaviour
 				else // Se n�o tiver valor m�ximo ou n�o passar no desempate passa a vermelho
 					thisAgent.switchState(SemaphoreStates.RED);
 
-				step++;
+				step=0;
 				break;
 		}
 		return;
@@ -126,6 +128,9 @@ public class StateCommunicationBehaviour extends Behaviour
 
 	private boolean findIfGreenCandidate(ArrayList<String> greenCandidates)
 	{
+		for (int i = 0; i < allPriorityInformation.size(); i++)
+			for(int j=0; j<INFO_PRIORITY_LENGTH;j++)
+				System.out.println(Integer.toString(i) + "-" + allPriorityInformation.get(i)[j]);
 
 		for (int i = 0; i < allPriorityInformation.size(); i++)
 		{
@@ -146,7 +151,8 @@ public class StateCommunicationBehaviour extends Behaviour
 	private void addPriorityInformation(String aid, String content)
 	{
 		String[] splitContent = content.split(DELIMITER);
-
+		for(int i=0;i<INFO_PRIORITY_LENGTH;i++)
+			System.out.println(splitContent[i]);
 		allPriorityInformation.add(splitContent);
 	}
 
@@ -161,11 +167,6 @@ public class StateCommunicationBehaviour extends Behaviour
 		return priorityStr + DELIMITER + emergencyVehiclesStr + DELIMITER + numberOfVehiclesStr + DELIMITER + idStr;
 	}
 
-	@Override
-	public boolean done()
-	{
-		return step == 3;
-	}
 
 	private double calculatePriority()
 	{

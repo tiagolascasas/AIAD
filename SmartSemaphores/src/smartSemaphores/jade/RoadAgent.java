@@ -55,6 +55,12 @@ public abstract class RoadAgent extends Agent
 		return "Agent " + id + "@SmartSemaphores";
 	}
 	
+	public static String makeSemaphoreName(int id)
+	{
+		return "Agent " + id;
+	}
+	
+	
 	public void incrementTime()
 	{
 		this.elapsedTime++;

@@ -106,7 +106,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 			int[] crossAconnectables = { 2, 7, 12, 3 };
 			for (int i : crossAagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents, crossAconnectables, 1000);
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents, crossAconnectables, 25);
 				this.crossContainerA.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 
@@ -119,7 +119,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 			int[] crossBconnectables = { 5, 9, 4, 14 };
 			for (int i : crossBagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents, crossBconnectables, 1000);
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents, crossBconnectables, 25);
 				this.crossContainerB.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 
@@ -131,7 +131,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 			int[] crossCconnectables = { 18, 16, 11, 13 };
 			for (int i : crossCagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents, crossCconnectables, 1000);
+				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents, crossCconnectables, 25);
 				this.crossContainerC.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 

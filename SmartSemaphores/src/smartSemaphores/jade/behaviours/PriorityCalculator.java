@@ -28,13 +28,14 @@ public final class PriorityCalculator
 			return calculatePriorityGreen(thisAgent);
 		else if (thisAgent.getCurrentState() == SemaphoreStates.RED)
 			return calculatePriorityRed(thisAgent);
-
+		System.out.println("eu NÃO CHEGO AQUI");
 		return -1.0; // TODO SE ISTO ACONTECER SOMETHING IS REALLY WRONG.... HOWEVER IT SHOULD
 						// PROCEED AS NORMAL?????
 	}
 
 	private static double calculatePriorityGreen(SemaphoricAgent thisAgent)
 	{
+		System.out.println("Entro aqui verde");
 		if (thisAgent.getSecondsPassedOnState() >= GREEN_MAX_TIME)
 			return GREEN_MAX_TIME_PRIORITY;
 		else if (thisAgent.getSecondsPassedOnState() >= GREEN_MIN_TIME)
@@ -47,6 +48,7 @@ public final class PriorityCalculator
 
 	private static double calculatePriorityRed(SemaphoricAgent thisAgent)
 	{
+		System.out.println("Entro aqui red");
 		if (thisAgent.getSecondsPassedOnState() >= RED_MAX_TIME)
 			return RED_MAX_TIME_PRIORITY;
 
