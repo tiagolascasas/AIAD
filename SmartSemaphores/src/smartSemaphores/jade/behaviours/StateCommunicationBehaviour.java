@@ -65,7 +65,6 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 				if (msg != null && msg.getConversationId().equals(CONVERSATION_ID))
 				{
 					repliesCnt++;
-					System.out.println(msg.getSender().getName() + "-" +msg.getContent() );
 					addPriorityInformation(msg.getSender().getName(), msg.getContent());
 					if (repliesCnt >= thisAgent.getNeighbours().size())
 					{
@@ -151,8 +150,7 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 	private void addPriorityInformation(String aid, String content)
 	{
 		String[] splitContent = content.split(DELIMITER);
-		for(int i=0;i<INFO_PRIORITY_LENGTH;i++)
-			System.out.println(splitContent[i]);
+
 		allPriorityInformation.add(splitContent);
 	}
 
