@@ -40,7 +40,7 @@ public class SemaphoricAgent extends RoadAgent
 
 		for (int nID : connectableIDs)
 		{
-			connectableAgents.add(makeFullName(nID));
+			connectableAgents.add(makeFullName2(nID));
 		}
 
 		this.capacity = capacity;
