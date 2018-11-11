@@ -355,7 +355,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 				y = 15;
 				break;
 			case 2:
-				x = 5;
+				x = 4;
 				y = 17;
 				break;
 			case 3:
@@ -367,7 +367,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 				y = 13;
 				break;
 			case 5:
-				x = 5;
+				x = 4;
 				y = 1;
 				break;
 			case 6:
@@ -376,7 +376,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 				break;
 			case 7:
 				x = 1;
-				y = 15;
+				y = 14;
 				break;
 			case 8:
 				x = 3;
@@ -384,7 +384,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 				break;
 			case 9:
 				x = 1;
-				y = 3;
+				y = 4;
 				break;
 			case 10:
 				x = 3;
