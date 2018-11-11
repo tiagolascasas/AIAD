@@ -91,7 +91,10 @@ public class SimulationManager
 		transferCars();
 
 		if (currentTick == SmartSemaphores.MAX_TICKS)
+		{
 			generateReport();
+			SimulationManager.currentTick = 0;
+		}
 	}
 
 	private void injectNormalVehicles()
