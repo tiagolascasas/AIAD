@@ -12,6 +12,7 @@ import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
@@ -278,9 +279,29 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 
 	private void initSimulation()
 	{
-		// Parameters parm = RunEnvironment.getInstance().getParameters();
-		// numAgents = (Integer)parm.getValue("numAgents");
-		// zoneDistance = (Double)parm.getValue("zoneDistance");
+		Parameters params = RunEnvironment.getInstance().getParameters();
+		
+		switch((String) params.getValue("simulationType")) {
+
+		case "TIMED_AGENTS":
+			SIMULATION_TYPE =  SimulationType.TIMED_AGENTS;
+			break;
+		case "CONSENSUAL_AGENTS":
+			SIMULATION_TYPE =  SimulationType.CONSENSUAL_AGENTS;
+			break;
+		case "SMART_AGENTS":
+		default:
+			SIMULATION_TYPE =  SimulationType.SMART_AGENTS;
+			break;		
+		};
+		
+		HOURS = (int) params.getValue("hours");
+		EXIT_RATE = (int) params.getValue("exitRate");
+		MIN_STARTING_CARS = (int) params.getValue("minStartCars");
+		MAX_STARTING_CARS = (int) params.getValue("maxStartCars");
+		EMERGENCY_PROBABILITY = (double) params.getValue("emergencyProbability");
+		PEDESTRIAN_PROBABILITY = (double) params.getValue("pedestrianProbability");
+		
 
 		MAX_TICKS = (int) (TICKS_PER_SECOND * 3600 * HOURS);
 		RunEnvironment.getInstance().endAt(MAX_TICKS);

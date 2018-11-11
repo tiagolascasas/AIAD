@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
-
 	<parameter name="randomSeed" displayName="Default Random Seed" type="int" defaultValue="__NULL__" />
+	<parameter name="simulationType" displayName="Simulation Type 
+		(SMART_AGENTS or TIMED_AGENTS or CONSENSUAL_AGENTS)"
+		type="string" defaultValue="SMART_AGENTS">
+	</parameter>
+	<parameter name="hours" displayName="Hours" type="int"
+		defaultValue="5"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter">
+	</parameter>
+	<parameter name="exitRate" displayName="Exit Rate" type="int"
+		defaultValue="3"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter">
+	</parameter>
+	<parameter name="minStartCars"
+		displayName="Minimum Number of Starting Cars" type="int"
+		defaultValue="100"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter">
+	</parameter>
+	<parameter name="maxStartCars"
+		displayName="Maximum Number of Starting Cars" type="int"
+		defaultValue="800"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter">
+	</parameter>
+	<parameter name="emergencyProbability"
+		displayName="Probability of Emergency Vehicules" type="double"
+		defaultValue="0.001f"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter">
+	</parameter>
+	<parameter name="pedestrianProbability"
+		displayName="Probability of Pedestrians" type="double"
+		defaultValue="0.15f"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter">
+	</parameter>
 
 </parameters>
