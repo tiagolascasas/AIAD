@@ -8,10 +8,7 @@ import smartSemaphores.jade.SemaphoricAgent;
 
 public class HandleRequestsBehaviour extends CyclicBehaviour
 {
-	private static final String DELIMITER = "/";
-	private static final int INFO_PRIORITY_LENGTH = 4;
 	private static final long serialVersionUID = -6969060109297684076L;
-	private static final String REQUEST_ID = "Request-priority";
 	private static final String INFORM_ID = "Inform-priority";
 
 	int step = 0;

@@ -1,7 +1,7 @@
 package smartSemaphores.repast;
 
 import repast.simphony.random.RandomHelper;
-import smartSemaphores.SmartSemaphoresRepastLauncher;
+import smartSemaphores.SmartSemaphores;
 
 public class FluxGeneratorSinusoid extends FluxGenerator
 {
@@ -14,7 +14,7 @@ public class FluxGeneratorSinusoid extends FluxGenerator
 		super(seed);
 		
 		this.amplitude = calculateAmplitude();
-		this.period = calculatePeriod(SmartSemaphoresRepastLauncher.MAX_TICKS);
+		this.period = calculatePeriod(SmartSemaphores.MAX_TICKS);
 		this.displacement = calculateDisplacement();
 	}
 

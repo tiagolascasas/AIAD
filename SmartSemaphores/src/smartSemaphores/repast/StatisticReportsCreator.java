@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import smartSemaphores.SmartSemaphoresRepastLauncher;
+import smartSemaphores.SmartSemaphores;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.SemaphoricAgent;
 
@@ -18,12 +18,12 @@ public class StatisticReportsCreator
 		StringBuilder string = new StringBuilder();
 		
 		string.append("Simulation Type, Hours, Exit rate (cars/second), Max. ticks, Emergency prob., Pedestrian prob.\n")
-		.append(SmartSemaphoresRepastLauncher.simulationType).append(",")
-		.append(SmartSemaphoresRepastLauncher.HOURS).append(",")
-		.append(SmartSemaphoresRepastLauncher.EXIT_RATE).append(",")
-		.append(SmartSemaphoresRepastLauncher.MAX_TICKS).append(",")
-		.append(SmartSemaphoresRepastLauncher.EMERGENCY_PROBABILITY).append(",")
-		.append(SmartSemaphoresRepastLauncher.PEDESTRIAN_PROBABILITY).append("\n");
+		.append(SmartSemaphores.simulationType).append(",")
+		.append(SmartSemaphores.HOURS).append(",")
+		.append(SmartSemaphores.EXIT_RATE).append(",")
+		.append(SmartSemaphores.MAX_TICKS).append(",")
+		.append(SmartSemaphores.EMERGENCY_PROBABILITY).append(",")
+		.append(SmartSemaphores.PEDESTRIAN_PROBABILITY).append("\n");
 		
 		String filename = makePath(uniqueID) + "_parameters.csv";
 		
@@ -82,7 +82,7 @@ public class StatisticReportsCreator
 		StringBuilder string = new StringBuilder();
 		string.append(String.join(",", header)).append("\n");
 
-		for (int i = 0; i < SmartSemaphoresRepastLauncher.MAX_TICKS; i++)
+		for (int i = 0; i < SmartSemaphores.MAX_TICKS; i++)
 		{
 			string.append(i);
 

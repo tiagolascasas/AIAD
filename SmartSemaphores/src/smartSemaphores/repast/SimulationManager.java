@@ -7,7 +7,7 @@ import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
 import smartSemaphores.SimulationType;
-import smartSemaphores.SmartSemaphoresRepastLauncher;
+import smartSemaphores.SmartSemaphores;
 import smartSemaphores.jade.RoadAgent;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.SemaphoricAgent;
@@ -16,8 +16,11 @@ import smartSemaphores.jade.SinkAgent;
 public class SimulationManager
 {
 	public static int currentTick = 0;
-
-	private SmartSemaphoresRepastLauncher simulation;
+	// variables for timed semaphores
+	public static int currentActiveSequence = 1;
+	private static int currentActiveCount = 0;
+	
+	private SmartSemaphores simulation;
 	private HashMap<String, FluxGenerator> generators;
 	private HashMap<String, Double> pedestrianProbs;
 	private ArrayList<SemaphoricAgent> sourceAgents;
@@ -27,11 +30,7 @@ public class SimulationManager
 	private ArrayList<NormalVehicle> injectedVehicles;
 	private ArrayList<EmergencyVehicle> injectedEmergency;
 
-	// variables for timed semaphores
-	public static int currentActiveSequence = 1;
-	private static int currentActiveCount = 0;
-
-	public SimulationManager(SmartSemaphoresRepastLauncher simulation)
+	public SimulationManager(SmartSemaphores simulation)
 	{
 		this.simulation = simulation;
 		this.sourceAgents = new ArrayList<>();
@@ -66,8 +65,6 @@ public class SimulationManager
 
 		for (SemaphoricAgent agent : sourceAgents)
 		{
-			// FluxGeneratorPolynomial generator = new
-			// FluxGeneratorPolynomial(RandomHelper.nextInt());
 			FluxGenerator generator = new FluxGeneratorSinusoid(RandomHelper.nextInt());
 			String name = agent.getAID().getName();
 			this.generators.put(name, generator);
@@ -90,7 +87,7 @@ public class SimulationManager
 		injectPedestrians();
 		transferCars();
 
-		if (currentTick == SmartSemaphoresRepastLauncher.MAX_TICKS)
+		if (currentTick == SmartSemaphores.MAX_TICKS)
 			generateReport();
 	}
 
@@ -116,7 +113,7 @@ public class SimulationManager
 
 	private void injectEmergencyVehicles()
 	{
-		double prob = SmartSemaphoresRepastLauncher.EMERGENCY_PROBABILITY;
+		double prob = SmartSemaphores.EMERGENCY_PROBABILITY;
 
 		for (SemaphoricAgent agent : this.sourceAgents)
 		{
@@ -155,7 +152,7 @@ public class SimulationManager
 				ArrayList<RoadAgent> neighbours = agent.getConnectableAgents();
 				int possibilites = neighbours.size();
 
-				for (int i = 0; i < SmartSemaphoresRepastLauncher.EXIT_RATE; i++)
+				for (int i = 0; i < SmartSemaphores.EXIT_RATE; i++)
 				{
 					int road = RandomHelper.nextIntFromTo(0, possibilites - 1);
 					RoadAgent targetAgent = neighbours.get(road);
@@ -183,9 +180,12 @@ public class SimulationManager
 	private void updateState()
 	{
 		if (currentTick == 0)
+		{
 			RunEnvironment.getInstance().setScheduleTickDelay(40);
+			injectStartingCars();
+		}
 
-		if (SmartSemaphoresRepastLauncher.simulationType == SimulationType.TIMED_AGENTS)
+		if (SmartSemaphores.simulationType == SimulationType.TIMED_AGENTS)
 		{
 			SimulationManager.currentActiveCount++;
 			if (SimulationManager.currentActiveCount == 60)
@@ -201,6 +201,24 @@ public class SimulationManager
 			agent.incrementSecondsOnState();
 
 		currentTick++;
+	}
+
+	private void injectStartingCars()
+	{
+		for (SemaphoricAgent agent : this.sourceAgents)
+		{
+			int min = SmartSemaphores.MIN_STARTING_CARS;
+			int max = SmartSemaphores.MAX_STARTING_CARS;
+			int numberOfCars = RandomHelper.nextIntFromTo(min, max);
+			ArrayList<NormalVehicle> vehicles = new ArrayList<>();
+			
+			for (int i = 0; i < numberOfCars; i++)
+			{
+				NormalVehicle vehicle = new NormalVehicle(0, agent.getID());
+				vehicles.add(vehicle);
+			}
+			agent.addCars(vehicles);
+		}
 	}
 
 	private void generateReport()

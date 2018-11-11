@@ -7,7 +7,7 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.util.ContextUtils;
 import sajas.core.Agent;
-import smartSemaphores.SmartSemaphoresRepastLauncher;
+import smartSemaphores.SmartSemaphores;
 import smartSemaphores.repast.EmergencyVehicle;
 import smartSemaphores.repast.NormalVehicle;
 
@@ -68,7 +68,7 @@ public abstract class SemaphoricAgent extends RoadAgent
 		for (String agentName : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);
-			Agent targetAgent = SmartSemaphoresRepastLauncher.getAgent(context, agentName);
+			Agent targetAgent = SmartSemaphores.getAgent(context, agentName);
 			@SuppressWarnings("unchecked")
 			Network<Object> net = (Network<Object>) ContextUtils.getContext(this)
 					.getProjection("SmartSemaphores Road Network");
@@ -181,7 +181,7 @@ public abstract class SemaphoricAgent extends RoadAgent
 		for (String id : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);
-			Agent agent = SmartSemaphoresRepastLauncher.getAgent(context, id);
+			Agent agent = SmartSemaphores.getAgent(context, id);
 			neighbours.add((RoadAgent) agent);
 		}
 		return neighbours;
@@ -190,7 +190,7 @@ public abstract class SemaphoricAgent extends RoadAgent
 	public Agent getNeighbourByID(String id)
 	{
 		Context<?> context = ContextUtils.getContext(this);
-		Agent agent = SmartSemaphoresRepastLauncher.getAgentByID(context, id);
+		Agent agent = SmartSemaphores.getAgentByID(context, id);
 		return agent;
 	}
 

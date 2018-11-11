@@ -3,8 +3,6 @@ package smartSemaphores;
 import java.awt.Point;
 import java.util.ArrayList;
 
-import org.geotools.feature.visitor.IdFinderFilterVisitor;
-
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -14,8 +12,6 @@ import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
-import repast.simphony.parameter.Parameters;
-import repast.simphony.space.graph.EdgeCreatorFactory;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
@@ -32,7 +28,7 @@ import smartSemaphores.jade.SmartSemaphoricAgent;
 import smartSemaphores.jade.TimedSemaphoricAgent;
 import smartSemaphores.repast.SimulationManager;
 
-public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements ContextBuilder<Object>
+public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<Object>
 {
 	// Constants
 	public static final float TICKS_PER_SECOND = 1.0f;
@@ -42,6 +38,8 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 	public static int HOURS = 5;
 	public static int EXIT_RATE = 3;
 	public static int MAX_TICKS;
+	public static int MIN_STARTING_CARS = 100;
+	public static int MAX_STARTING_CARS = 800;
 	public static double EMERGENCY_PROBABILITY = 0.001f;
 	public static double PEDESTRIAN_PROBABILITY = 0.15f;
 
@@ -84,7 +82,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 
 		this.agents = new ArrayList<>();
 
-		switch (SmartSemaphoresRepastLauncher.simulationType)
+		switch (SmartSemaphores.simulationType)
 		{
 			case SMART_AGENTS:
 				launchSmartAgents(true);
