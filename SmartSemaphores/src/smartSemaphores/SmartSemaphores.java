@@ -45,7 +45,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
     public static final float TICKS_PER_SECOND = 1.0f;
 
     /** The simulation type. */
-    public static SimulationType SIMULATION_TYPE = SimulationType.SMART_AGENTS;
+    public static SimulationType SIMULATION_TYPE = SimulationType.CONSENSUAL_AGENTS;
 
     /** The hours for the simulation. */
     public static int HOURS = 5;

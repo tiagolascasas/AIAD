@@ -104,7 +104,11 @@ public final class PriorityCalculator {
      */
     private static double calculateCarAndPedestrianPriority(SemaphoricAgent thisAgent) {
 	int pedestrians = thisAgent.getPedestriansNumber();
-	return (thisAgent.carRoadRatio() * 5.5)
-		+ ((-0.0012 * Math.pow(pedestrians, 2)) - (0.0266 * pedestrians) + 0.0126);
+	double pedestrianPriority = 0;
+	if (pedestrians >= 20)
+	    pedestrianPriority = -1;
+	else
+	    pedestrianPriority = ((-0.0012 * Math.pow(pedestrians, 2)) - (0.0266 * pedestrians) + 0.0126);
+	return (thisAgent.carRoadRatio() * 5.5) + pedestrianPriority;
     }
 }
