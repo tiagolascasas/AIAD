@@ -260,7 +260,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 		this.context = context;
 
 		initSimulation();
-		
+
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 
 		// implement strict borders so there is no wrapping
@@ -270,7 +270,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("SmartSemaphores Road Network", context, true);
 		netBuilder.buildNetwork();
-		
+
 		this.manager = new SimulationManager(this);
 		context.add(this.manager);
 
@@ -280,28 +280,29 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 	private void initSimulation()
 	{
 		Parameters params = RunEnvironment.getInstance().getParameters();
-		
-		switch((String) params.getValue("simulationType")) {
 
-		case "TIMED_AGENTS":
-			SIMULATION_TYPE =  SimulationType.TIMED_AGENTS;
-			break;
-		case "CONSENSUAL_AGENTS":
-			SIMULATION_TYPE =  SimulationType.CONSENSUAL_AGENTS;
-			break;
-		case "SMART_AGENTS":
-		default:
-			SIMULATION_TYPE =  SimulationType.SMART_AGENTS;
-			break;		
-		};
-		
+		switch ((String) params.getValue("simulationType"))
+		{
+
+			case "TIMED_AGENTS":
+				SIMULATION_TYPE = SimulationType.TIMED_AGENTS;
+				break;
+			case "CONSENSUAL_AGENTS":
+				SIMULATION_TYPE = SimulationType.CONSENSUAL_AGENTS;
+				break;
+			case "SMART_AGENTS":
+			default:
+				SIMULATION_TYPE = SimulationType.SMART_AGENTS;
+				break;
+		}
+		;
+
 		HOURS = (int) params.getValue("hours");
 		EXIT_RATE = (int) params.getValue("exitRate");
 		MIN_STARTING_CARS = (int) params.getValue("minStartCars");
 		MAX_STARTING_CARS = (int) params.getValue("maxStartCars");
 		EMERGENCY_PROBABILITY = (double) params.getValue("emergencyProbability");
 		PEDESTRIAN_PROBABILITY = (double) params.getValue("pedestrianProbability");
-		
 
 		MAX_TICKS = (int) (TICKS_PER_SECOND * 3600 * HOURS);
 		RunEnvironment.getInstance().endAt(MAX_TICKS);

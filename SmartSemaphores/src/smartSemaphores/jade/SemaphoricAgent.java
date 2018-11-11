@@ -64,7 +64,7 @@ public abstract class SemaphoricAgent extends RoadAgent
 	{
 		if (wantedState == this.state)
 			return;
-		System.out.println("Agent" + Integer.toString(this.id) + " changing state to " + this.state.toString());
+		System.out.println("Agent " + Integer.toString(this.id) + " changing state to " + this.state.toString());
 		for (String agentName : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);

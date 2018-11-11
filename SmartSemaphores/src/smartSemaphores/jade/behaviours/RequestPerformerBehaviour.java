@@ -28,7 +28,6 @@ public class RequestPerformerBehaviour extends CyclicBehaviour
 		switch (step)
 		{
 			case 0:
-				System.out.println("RequestPerformer0");
 				if (thisAgent.getCurrentState().equals(SemaphoreStates.GREEN))
 				{
 					return;
@@ -36,7 +35,7 @@ public class RequestPerformerBehaviour extends CyclicBehaviour
 
 				double priority = PriorityCalculator.calculatePriority(thisAgent);
 
-				double ratio = priority / PriorityCalculator.EMERGENCY_PRIORITY; // 12 é o max priority
+				double ratio = priority / PriorityCalculator.EMERGENCY_PRIORITY;
 
 				Random generator = new Random(System.currentTimeMillis());
 
@@ -60,7 +59,6 @@ public class RequestPerformerBehaviour extends CyclicBehaviour
 
 				break;
 			case 1:
-				System.out.println("RequestPerformer1");
 				ACLMessage reply;
 				MessageTemplate mt = MessageTemplate.or(MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL),
 						MessageTemplate.MatchPerformative(ACLMessage.REJECT_PROPOSAL));
@@ -81,7 +79,6 @@ public class RequestPerformerBehaviour extends CyclicBehaviour
 
 				break;
 			case 2:
-				System.out.println("RequestPerformer2");
 				ACLMessage informMSG;
 				if (accepted >= repliesCnt)
 				{
@@ -103,5 +100,4 @@ public class RequestPerformerBehaviour extends CyclicBehaviour
 				break;
 		}
 	}
-
 }

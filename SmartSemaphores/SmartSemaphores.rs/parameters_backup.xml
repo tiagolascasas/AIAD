@@ -13,12 +13,12 @@
 									
 		/>
 				<parameter name="hours" displayName="Hours" type="int" 
-						defaultValue="5" 
+						defaultValue="10" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="emergencyProbability" displayName="Probability of Emergency Vehicles" type="double" 
+				<parameter name="emergencyProbability" displayName="Probability of Emergency Vehicules" type="double" 
 						defaultValue="0.001" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
