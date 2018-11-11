@@ -10,6 +10,8 @@ import sajas.core.Agent;
 import smartSemaphores.SmartSemaphores;
 import smartSemaphores.repast.EmergencyVehicle;
 import smartSemaphores.repast.NormalVehicle;
+import smartSemaphores.repast.Pedestrian;
+import smartSemaphores.repast.SimulationManager;
 
 public abstract class SemaphoricAgent extends RoadAgent
 {
@@ -17,10 +19,12 @@ public abstract class SemaphoricAgent extends RoadAgent
 	private ArrayList<String> connectableAgents;
 	private ArrayList<String> semaphoricAgents;
 	private SemaphoreStates state = SemaphoreStates.RED;
+	private ArrayList<SemaphoreStates> stateTracker;
+	
+	private ArrayList<Pedestrian> pedestrians;
 	private int pedestrianCount = 0;
 	private int pedestrianTotalCount = 0;
 	private int secondsPassedOnState = 0;
-	private ArrayList<SemaphoreStates> stateTracker;
 
 	public SemaphoricAgent(int id, int[] semaphoricIDs, int[] connectableIDs, int capacity)
 	{
@@ -28,6 +32,7 @@ public abstract class SemaphoricAgent extends RoadAgent
 
 		this.semaphoricAgents = new ArrayList<>();
 		this.connectableAgents = new ArrayList<>();
+		this.pedestrians = new ArrayList<>();
 
 		for (int nID : semaphoricIDs)
 		{
@@ -64,7 +69,9 @@ public abstract class SemaphoricAgent extends RoadAgent
 	{
 		if (wantedState == this.state)
 			return;
+		
 		System.out.println("Agent " + Integer.toString(this.id) + " changing state to " + this.state.toString());
+		
 		for (String agentName : this.connectableAgents)
 		{
 			Context<?> context = ContextUtils.getContext(this);
@@ -75,12 +82,15 @@ public abstract class SemaphoricAgent extends RoadAgent
 			if (wantedState == SemaphoreStates.GREEN)
 			{
 				net.addEdge(this, targetAgent);
-			} else
+			} 
+			else
 			{
 				RepastEdge<Object> edge = net.getEdge(this, targetAgent);
 				net.removeEdge(edge);
+				
 				this.pedestrianTotalCount += this.pedestrianCount;
 				this.pedestrianCount = 0;
+				flushPedestrians();
 			}
 		}
 		this.state = wantedState;
@@ -217,14 +227,23 @@ public abstract class SemaphoricAgent extends RoadAgent
 		return v;
 	}
 
-	public void addPedestrian()
+	public void addPedestrian(Pedestrian p)
 	{
 		this.pedestrianCount++;
+		this.pedestrians.add(p);
 	}
 
 	public int getPedestrianTotalCount()
 	{
 		return pedestrianTotalCount;
+	}
+	
+	private void flushPedestrians()
+	{
+		int tick = SimulationManager.currentTick;
+		for (Pedestrian p : this.pedestrians)
+			p.setEndTick(tick);
+		this.pedestrians = new ArrayList<>();
 	}
 
 	public ArrayList<SemaphoreStates> getStateTracker()

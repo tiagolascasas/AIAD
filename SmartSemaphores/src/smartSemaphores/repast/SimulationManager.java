@@ -30,6 +30,7 @@ public class SimulationManager
 	private ArrayList<SemaphoricAgent> semaphoricAgents;
 	private ArrayList<NormalVehicle> injectedVehicles;
 	private ArrayList<EmergencyVehicle> injectedEmergency;
+	private ArrayList<Pedestrian> pedestrians;
 
 	public SimulationManager(SmartSemaphores simulation)
 	{
@@ -41,6 +42,7 @@ public class SimulationManager
 		this.pedestrianProbs = new HashMap<>();
 		this.injectedVehicles = new ArrayList<>();
 		this.injectedEmergency = new ArrayList<>();
+		this.pedestrians = new ArrayList<>();
 	}
 
 	public void init(int[] sources, int[] middles, int[] sinks)
@@ -138,7 +140,14 @@ public class SimulationManager
 				double prob = this.pedestrianProbs.get(agent.getAID().getName());
 				double random = Math.random();
 				if (random < prob)
-					agent.addPedestrian();
+				{
+					int agentID = agent.getID();
+					int tick = SimulationManager.currentTick;
+					Pedestrian pedestrian = new Pedestrian(agentID, tick);
+					
+					agent.addPedestrian(pedestrian);
+					this.pedestrians.add(pedestrian);
+				}
 			}
 		}
 
@@ -248,6 +257,7 @@ public class SimulationManager
 		StatisticReportsCreator.generateAverageTimesDatasets(uniqueID, exitedNormal, exitedEmer);
 		StatisticReportsCreator.generateAllTimesDatasets(uniqueID, exitedNormal, exitedEmer);
 		StatisticReportsCreator.generateSemaphoreDataset(uniqueID, this.semaphoricAgents);
+		StatisticReportsCreator.generatePedestrianReport(uniqueID, pedestrians);
 		
 		this.printBasicReportToStdout();
 	}

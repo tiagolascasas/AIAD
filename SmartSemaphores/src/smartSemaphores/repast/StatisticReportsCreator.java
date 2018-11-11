@@ -95,6 +95,22 @@ public class StatisticReportsCreator
 		saveToFile(filename, string.toString());
 	}
 	
+	public static void generatePedestrianReport(String uniqueID, ArrayList<Pedestrian> pedestrians)
+	{
+		StringBuilder string = new StringBuilder();
+		string.append("agent,waiting_time,start,end\n");
+		
+		for (Pedestrian p : pedestrians)
+			string.append(p.getSemaphore()).append(",")
+				.append(p.getElapsedTime()).append(",")
+				.append(p.getStartTick()).append(",")
+				.append(p.getEndTick()).append("\n");
+		
+		String filename = makePath(uniqueID) + "_pedestrians.csv";
+		
+		saveToFile(filename, string.toString());
+	}
+	
 	private static void saveToFile(String filename, String content)
 	{
 		try
