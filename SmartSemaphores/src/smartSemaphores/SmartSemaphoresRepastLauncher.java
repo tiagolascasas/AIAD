@@ -3,6 +3,8 @@ package smartSemaphores;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import org.geotools.feature.visitor.IdFinderFilterVisitor;
+
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -22,9 +24,11 @@ import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repasts.RepastSLauncher;
 import sajas.wrapper.ContainerController;
+import smartSemaphores.jade.ConsensualSemaphoricAgent;
 import smartSemaphores.jade.RoadAgent;
 import smartSemaphores.jade.SemaphoricAgent;
 import smartSemaphores.jade.SinkAgent;
+import smartSemaphores.jade.SmartSemaphoricAgent;
 import smartSemaphores.jade.TimedSemaphoricAgent;
 import smartSemaphores.repast.SimulationManager;
 
@@ -41,7 +45,7 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 	public static double EMERGENCY_PROBABILITY = 0.001f;
 	public static double PEDESTRIAN_PROBABILITY = 0.15f;
 
-	// JADE containers
+	// JADE containers and agents
 	@SuppressWarnings("unused")
 	private ContainerController mainContainer;
 	private ContainerController crossContainerA;
@@ -83,7 +87,10 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		switch (SmartSemaphoresRepastLauncher.simulationType)
 		{
 			case SMART_AGENTS:
-				launchSmartAgents();
+				launchSmartAgents(true);
+				break;
+			case CONSENSUAL_AGENTS:
+				launchSmartAgents(false);
 				break;
 			case TIMED_AGENTS:
 				launchTimedAgents();
@@ -96,9 +103,8 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 		this.manager.init(sources, middles, sinks);
 	}
 
-	private void launchSmartAgents()
+	private void launchSmartAgents(boolean smart)
 	{
-
 		try
 		{
 			// Semaphoric agents on road cross A
@@ -106,7 +112,11 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 			int[] crossAconnectables = { 2, 7, 12, 3 };
 			for (int i : crossAagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossAagents, crossAconnectables, 1000);
+				SemaphoricAgent agent;
+				if (smart)
+					agent = new SmartSemaphoricAgent(i, crossAagents, crossAconnectables, 1000);
+				else
+					agent = new ConsensualSemaphoricAgent(i, crossAagents, crossAconnectables, 1000);
 				this.crossContainerA.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 
@@ -119,7 +129,11 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 			int[] crossBconnectables = { 5, 9, 4, 14 };
 			for (int i : crossBagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossBagents, crossBconnectables, 1000);
+				SemaphoricAgent agent;
+				if (smart)
+					agent = new SmartSemaphoricAgent(i, crossBagents, crossBconnectables, 1000);
+				else
+					agent = new ConsensualSemaphoricAgent(i, crossBagents, crossBconnectables, 1000);
 				this.crossContainerB.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 
@@ -131,7 +145,11 @@ public class SmartSemaphoresRepastLauncher extends RepastSLauncher implements Co
 			int[] crossCconnectables = { 18, 16, 11, 13 };
 			for (int i : crossCagents)
 			{
-				SemaphoricAgent agent = new SemaphoricAgent(i, crossCagents, crossCconnectables, 1000);
+				SemaphoricAgent agent;
+				if (smart)
+					agent = new SmartSemaphoricAgent(i, crossCagents, crossCconnectables, 1000);
+				else
+					agent = new ConsensualSemaphoricAgent(i, crossCagents, crossCconnectables, 1000);
 				this.crossContainerC.acceptNewAgent("Agent " + i, agent).start();
 				this.agents.add(agent);
 

@@ -56,5 +56,4 @@ public class HandleRequestsBehaviour extends CyclicBehaviour
 				break;
 		}
 	}
-
 }

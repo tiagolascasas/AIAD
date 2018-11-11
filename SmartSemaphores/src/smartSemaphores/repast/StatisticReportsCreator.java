@@ -1,6 +1,8 @@
 package smartSemaphores.repast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +25,7 @@ public class StatisticReportsCreator
 		.append(SmartSemaphoresRepastLauncher.EMERGENCY_PROBABILITY).append(",")
 		.append(SmartSemaphoresRepastLauncher.PEDESTRIAN_PROBABILITY).append("\n");
 		
-		String filename = "results/" + uniqueID + "_parameters.csv";
+		String filename = makePath(uniqueID) + "_parameters.csv";
 		
 		saveToFile(filename, string.toString());
 	}
@@ -37,7 +39,7 @@ public class StatisticReportsCreator
 		String report1 = "source,sink,average_time\n" + t1.toString();
 		String report2 = "source,sink,average_time\n" + t2.toString();
 
-		String filename = "results/" + uniqueID + "_avg_time_";
+		String filename = makePath(uniqueID) + "_avg_time_";
 
 		saveToFile(filename + "normal.csv", report1);
 		saveToFile(filename + "emergency.csv", report2);
@@ -59,7 +61,7 @@ public class StatisticReportsCreator
 			string2.append(v.getOriginPoint()).append(",").append(v.getEndPoint()).append(",")
 					.append(v.getElapsedTime()).append("\n");
 
-		String filename = "results/" + uniqueID + "_total_time_";
+		String filename = makePath(uniqueID) + "_total_time_";
 
 		saveToFile(filename + "normal.csv", string1.toString());
 		saveToFile(filename + "emergency.csv", string2.toString());
@@ -89,7 +91,7 @@ public class StatisticReportsCreator
 			string.append("\n");
 		}
 
-		String filename = "results/" + uniqueID + "_semaphores_state.csv";
+		String filename = makePath(uniqueID) + "_semaphores_state.csv";
 
 		saveToFile(filename, string.toString());
 	}
@@ -98,13 +100,21 @@ public class StatisticReportsCreator
 	{
 		try
 		{
-			PrintWriter f = new PrintWriter(filename);
+			File file = new File(filename);
+			file.getParentFile().mkdir();
+			file.createNewFile();
+			PrintWriter f = new PrintWriter(file);
 			f.write(content);
 			f.close();
 
-		} catch (FileNotFoundException e)
+		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private static String makePath(String uniqueID)
+	{
+		return "results/" + uniqueID + "/" + uniqueID;
 	}
 }

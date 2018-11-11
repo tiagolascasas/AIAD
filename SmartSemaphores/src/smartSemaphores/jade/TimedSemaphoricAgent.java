@@ -16,6 +16,8 @@ public class TimedSemaphoricAgent extends SemaphoricAgent
 	@Override
 	protected void setup()
 	{
+		super.setup();
+		
 		this.addBehaviour(new TimedBehaviour());
 	}
 

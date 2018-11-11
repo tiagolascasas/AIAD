@@ -1,5 +1,5 @@
-Simulation reports are saved here. There are a total of 6 reports per simulation.
-Each simulation has an unique ID to tell the files apart (UNIX timestamp on the moment it ends).
+Simulation reports are saved here. There are a total of 6 reports per simulation, all in the same folder.
+Each simulation execution has an unique ID to tell it apart from the others (UNIX timestamp on the moment it ends).
 
 Reports:
 - <id>_parameters			parameters used for the simulation

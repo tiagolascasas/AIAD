@@ -1,1 +1,3 @@
-*.csv
+*
+!reamde.txt
+!.gitignore
