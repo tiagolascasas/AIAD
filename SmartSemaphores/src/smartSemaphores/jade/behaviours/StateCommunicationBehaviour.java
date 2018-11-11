@@ -88,7 +88,7 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 			thisAgent.switchState(SemaphoreStates.RED);
 	}
 
-	public boolean greenTieBreaker(ArrayList<String> greenCandidates, ArrayList<String[]> allPriorityInformation,
+	public static boolean greenTieBreaker(ArrayList<String> greenCandidates, ArrayList<String[]> allPriorityInformation,
 			int[] agentVariables)
 	{
 
@@ -114,7 +114,7 @@ public class StateCommunicationBehaviour extends CyclicBehaviour
 		return true;
 	}
 
-	public boolean findIfGreenCandidate(ArrayList<String> greenCandidates, ArrayList<String[]> allPriorityInformation,
+	public static boolean findIfGreenCandidate(ArrayList<String> greenCandidates, ArrayList<String[]> allPriorityInformation,
 			double priority)
 	{
 		for (int i = 0; i < allPriorityInformation.size(); i++)
