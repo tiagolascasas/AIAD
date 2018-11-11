@@ -337,6 +337,15 @@ public abstract class SemaphoricAgent extends RoadAgent {
     }
 
     /**
+     * Gets the number of pedestrians.
+     *
+     * @return the pedestrians number
+     */
+    public int getPedestriansNumber() {
+	return pedestrians.size();
+    }
+
+    /**
      * Gets the pedestrian total count.
      *
      * @return the pedestrian total count

@@ -40,11 +40,11 @@ public final class PriorityCalculator {
     private static final int GREEN_MIN_TIME = 15;
 
     /**
-     * Calculates priority of a semaphore agent.
+     * Calculate priority.
      *
      * @param thisAgent
-     *            the semaphore agent
-     * @return the priority
+     *            the this agent
+     * @return the double
      */
     public static double calculatePriority(SemaphoricAgent thisAgent) {
 	if (thisAgent.hasEmergencyVehicles())
@@ -62,11 +62,11 @@ public final class PriorityCalculator {
     }
 
     /**
-     * Calculate priority for green state.
+     * Calculate priority green.
      *
      * @param thisAgent
-     *            the semaphore agent
-     * @return the priority
+     *            the this agent
+     * @return the double
      */
     private static double calculatePriorityGreen(SemaphoricAgent thisAgent) {
 	if (thisAgent.getSecondsPassedOnState() >= GREEN_MAX_TIME)
@@ -74,22 +74,37 @@ public final class PriorityCalculator {
 	else if (thisAgent.getSecondsPassedOnState() >= GREEN_MIN_TIME)
 	    return GREEN_MIN_TIME_PRIORITY;
 	else
-	    return ((-0.0002 * Math.pow(thisAgent.getSecondsPassedOnState(), 2))
-		    - (0.0243 * thisAgent.getSecondsPassedOnState()) + 5.7327) + (thisAgent.carRoadRatio() * 5);
+	    return ((-0.0001 * Math.pow(thisAgent.getSecondsPassedOnState(), 2))
+		    - (0.0389 * thisAgent.getSecondsPassedOnState()) + 6.2782)
+		    + calculateCarAndPedestrianPriority(thisAgent);
     }
 
     /**
-     * Calculate priority for red state.
+     * Calculate priority red.
      *
      * @param thisAgent
-     *            the semaphore agent
-     * @return the priority
+     *            the this agent
+     * @return the double
      */
     private static double calculatePriorityRed(SemaphoricAgent thisAgent) {
 	if (thisAgent.getSecondsPassedOnState() >= RED_MAX_TIME)
 	    return RED_MAX_TIME_PRIORITY;
 
 	return ((0.0002 * Math.pow(thisAgent.getSecondsPassedOnState(), 2))
-		+ (0.0005 * thisAgent.getSecondsPassedOnState()) - 0.0578) + (thisAgent.carRoadRatio() * 5);
+		+ (0.0059 * thisAgent.getSecondsPassedOnState()) - 0.1051)
+		+ calculateCarAndPedestrianPriority(thisAgent);
+    }
+
+    /**
+     * Calculate car and pedestrian priority.
+     *
+     * @param thisAgent
+     *            the this agent
+     * @return the double
+     */
+    private static double calculateCarAndPedestrianPriority(SemaphoricAgent thisAgent) {
+	int pedestrians = thisAgent.getPedestriansNumber();
+	return (thisAgent.carRoadRatio() * 5.5)
+		+ ((-0.0012 * Math.pow(pedestrians, 2)) - (0.0266 * pedestrians) + 0.0126);
     }
 }
