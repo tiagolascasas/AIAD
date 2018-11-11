@@ -1,0 +1,28 @@
+Limites consideradados:
+LimMaxTempoDesligado=180
+LimMaxTempoAceso=120
+LimMinTempoAceso=20
+LimiteDeEspaço(depende do comprimento da via)
+__________________________________________________________________________________________________________
+Fórmulas Polinomiais:
+
+(QuantidadeCarros/LimiteDeEspaço)=Rácio=R;
+Caso aceso:
+Prioridade=(-0,0002*TempoAceso^2 - 0,0243*TempoAceso + 5,7327) + (3,9744*R^2+0,562*R+0,2643)
+
+Caso desligado:
+Prioridade=(0,0002*TempoDesligado^2 + 0,0005*TempoDesligado - 0,0578) + (3,9744*R^2+0,562*R+0,2643)
+___________________________________________________________________________________________________________
+Fórmulas lineares:
+Caso aceso: 
+Prioridade=(-0,05*TempoAceso + 6) + (QuantidadeCarros/Limite de Espaço*5)
+Caso desligado: 
+Prioridade=(0,0313*TempoDesligado-0,625) + ((QuantidadeCarros/Limite de Espaço*5))
+
+___________________________________________________________________________________________________________
+Fórmulas Polinomial/Linear (mix das duas):
+Caso aceso:
+Prioridade=(-0,0002*TempoAceso^2 - 0,0243*TempoAceso + 5,7327) + (R*5)
+
+Caso desligado:
+Prioridade=(0,0002*TempoDesligado^2 + 0,0005*TempoDesligado - 0,0578) + (R*5)
