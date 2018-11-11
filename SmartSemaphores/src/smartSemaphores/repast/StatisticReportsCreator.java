@@ -18,7 +18,7 @@ public class StatisticReportsCreator
 		StringBuilder string = new StringBuilder();
 		
 		string.append("Simulation Type, Hours, Exit rate (cars/second), Max. ticks, Emergency prob., Pedestrian prob.\n")
-		.append(SmartSemaphores.simulationType).append(",")
+		.append(SmartSemaphores.SIMULATION_TYPE).append(",")
 		.append(SmartSemaphores.HOURS).append(",")
 		.append(SmartSemaphores.EXIT_RATE).append(",")
 		.append(SmartSemaphores.MAX_TICKS).append(",")

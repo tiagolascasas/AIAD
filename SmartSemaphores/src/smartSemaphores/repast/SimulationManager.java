@@ -1,6 +1,7 @@
 package smartSemaphores.repast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import repast.simphony.engine.environment.RunEnvironment;
@@ -183,9 +184,12 @@ public class SimulationManager
 		{
 			RunEnvironment.getInstance().setScheduleTickDelay(40);
 			injectStartingCars();
+			
+			if (SmartSemaphores.SIMULATION_TYPE != SimulationType.TIMED_AGENTS)
+				initGreenAgents();
 		}
 
-		if (SmartSemaphores.simulationType == SimulationType.TIMED_AGENTS)
+		if (SmartSemaphores.SIMULATION_TYPE == SimulationType.TIMED_AGENTS)
 		{
 			SimulationManager.currentActiveCount++;
 			if (SimulationManager.currentActiveCount == 60)
@@ -201,6 +205,17 @@ public class SimulationManager
 			agent.incrementSecondsOnState();
 
 		currentTick++;
+	}
+	
+	private void initGreenAgents()
+	{
+		Integer[] startingGreen = {1, 6, 15};
+		for (SemaphoricAgent agent : this.sourceAgents)
+		{
+			int id = agent.getID();
+			if (Arrays.asList(startingGreen).contains(id))
+				agent.switchState(SemaphoreStates.GREEN);
+		}
 	}
 
 	private void injectStartingCars()

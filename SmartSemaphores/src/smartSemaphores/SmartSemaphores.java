@@ -34,7 +34,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 	public static final float TICKS_PER_SECOND = 1.0f;
 
 	// Configurable simulation variables and definitions
-	public static SimulationType simulationType = SimulationType.SMART_AGENTS;
+	public static SimulationType SIMULATION_TYPE = SimulationType.SMART_AGENTS;
 	public static int HOURS = 5;
 	public static int EXIT_RATE = 3;
 	public static int MAX_TICKS;
@@ -82,7 +82,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 
 		this.agents = new ArrayList<>();
 
-		switch (SmartSemaphores.simulationType)
+		switch (SmartSemaphores.SIMULATION_TYPE)
 		{
 			case SMART_AGENTS:
 				launchSmartAgents(true);
