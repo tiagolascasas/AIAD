@@ -1,3 +1,10 @@
+/*
+ * SmartSemaphores
+ * @author      Nadia Carvalho
+ * @author      Ruben Torres
+ * @author	Tiago Santos
+ * @version       0.1.0
+ */
 package smartSemaphores.jade.behaviours;
 
 import java.util.Random;
@@ -9,95 +16,105 @@ import sajas.core.behaviours.CyclicBehaviour;
 import smartSemaphores.jade.SemaphoreStates;
 import smartSemaphores.jade.SemaphoricAgent;
 
-public class RequestPerformerBehaviour extends CyclicBehaviour
-{
-	private static final long serialVersionUID = -4771134109565630310L;
-	private static final String REQUEST_ID = "Request-priority";
-	private static final String INFORM_ID = "Inform-priority";
+/**
+ * The Class RequestPerformerBehaviour.
+ */
+public class RequestPerformerBehaviour extends CyclicBehaviour {
 
-	int step = 0;
-	int accepted = 0;
-	int repliesCnt = 0;
-	private SemaphoricAgent thisAgent;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = -4771134109565630310L;
 
-	@Override
-	public void action()
-	{
-		thisAgent = (SemaphoricAgent) myAgent;
+    /** The Constant REQUEST_ID. */
+    private static final String REQUEST_ID = "Request-priority";
 
-		switch (step)
-		{
-			case 0:
-				if (thisAgent.getCurrentState().equals(SemaphoreStates.GREEN))
-				{
-					return;
-				}
+    /** The Constant INFORM_ID. */
+    private static final String INFORM_ID = "Inform-priority";
 
-				double priority = PriorityCalculator.calculatePriority(thisAgent);
+    /** The step. */
+    int step = 0;
 
-				double ratio = priority / PriorityCalculator.EMERGENCY_PRIORITY;
+    /** The replys that accept the proposel . */
+    int accepted = 0;
 
-				Random generator = new Random(System.currentTimeMillis());
+    /** The replies count. */
+    int repliesCnt = 0;
 
-				if (generator.nextDouble() <= ratio)
-				{
+    /** The SemaphoricAgent of this behaviour. */
+    private SemaphoricAgent thisAgent;
 
-					ACLMessage requestMSG = new ACLMessage(ACLMessage.PROPOSE);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see sajas.core.behaviours.Behaviour#action()
+     */
+    @Override
+    public void action() {
+	thisAgent = (SemaphoricAgent) myAgent;
+	switch (step) {
+	case 0:
+	    if (thisAgent.getCurrentState().equals(SemaphoreStates.GREEN)) {
+		return;
+	    }
 
-					for (int i = 0; i < thisAgent.getNeighbours().size(); i++)
-					{
+	    double priority = PriorityCalculator.calculatePriority(thisAgent);
 
-						String name = thisAgent.getNeighbours().get(i);
-						requestMSG.addReceiver(new AID(name, AID.ISLOCALNAME));
-					}
+	    double ratio = priority / PriorityCalculator.EMERGENCY_PRIORITY;
 
-					requestMSG.setContent(Double.toString(priority));
-					requestMSG.setConversationId(REQUEST_ID);
-					myAgent.send(requestMSG);
-					step = 1;
-				}
+	    Random generator = new Random(System.currentTimeMillis());
 
-				break;
-			case 1:
-				ACLMessage reply;
-				MessageTemplate mt = MessageTemplate.or(MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL),
-						MessageTemplate.MatchPerformative(ACLMessage.REJECT_PROPOSAL));
+	    if (generator.nextDouble() <= ratio) {
 
-				while ((reply = myAgent.receive(mt)) != null)
-				{
+		ACLMessage requestMSG = new ACLMessage(ACLMessage.PROPOSE);
 
-					repliesCnt++;
-					if (reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL)
-						accepted++;
+		for (int i = 0; i < thisAgent.getNeighbours().size(); i++) {
 
-					if (repliesCnt >= thisAgent.getNeighbours().size())
-					{
-						step = 2;
-						break;
-					}
-				}
-
-				break;
-			case 2:
-				ACLMessage informMSG;
-				if (accepted >= repliesCnt)
-				{
-					informMSG = new ACLMessage(ACLMessage.CONFIRM);
-					thisAgent.switchState(SemaphoreStates.GREEN);
-				} else
-					informMSG = new ACLMessage(ACLMessage.DISCONFIRM);
-
-				for (int i = 0; i < thisAgent.getNeighbours().size(); i++)
-				{
-					String name = thisAgent.getNeighbours().get(i);
-					informMSG.addReceiver(new AID(name, AID.ISLOCALNAME));
-				}
-				informMSG.setConversationId(INFORM_ID);
-				myAgent.send(informMSG);
-				step = 0;
-				accepted = 0;
-				repliesCnt = 0;
-				break;
+		    String name = thisAgent.getNeighbours().get(i);
+		    requestMSG.addReceiver(new AID(name, AID.ISLOCALNAME));
 		}
+
+		requestMSG.setContent(Double.toString(priority));
+		requestMSG.setConversationId(REQUEST_ID);
+		myAgent.send(requestMSG);
+		step = 1;
+	    }
+
+	    break;
+	case 1:
+	    ACLMessage reply;
+	    MessageTemplate mt = MessageTemplate.or(MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL),
+		    MessageTemplate.MatchPerformative(ACLMessage.REJECT_PROPOSAL));
+
+	    while ((reply = myAgent.receive(mt)) != null) {
+
+		repliesCnt++;
+		if (reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL)
+		    accepted++;
+
+		if (repliesCnt >= thisAgent.getNeighbours().size()) {
+		    step = 2;
+		    break;
+		}
+	    }
+
+	    break;
+	case 2:
+	    ACLMessage informMSG;
+	    if (accepted >= repliesCnt) {
+		informMSG = new ACLMessage(ACLMessage.CONFIRM);
+		thisAgent.switchState(SemaphoreStates.GREEN);
+	    } else
+		informMSG = new ACLMessage(ACLMessage.DISCONFIRM);
+
+	    for (int i = 0; i < thisAgent.getNeighbours().size(); i++) {
+		String name = thisAgent.getNeighbours().get(i);
+		informMSG.addReceiver(new AID(name, AID.ISLOCALNAME));
+	    }
+	    informMSG.setConversationId(INFORM_ID);
+	    myAgent.send(informMSG);
+	    step = 0;
+	    accepted = 0;
+	    repliesCnt = 0;
+	    break;
 	}
+    }
 }
