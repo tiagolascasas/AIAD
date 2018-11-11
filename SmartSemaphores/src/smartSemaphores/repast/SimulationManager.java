@@ -34,6 +34,9 @@ public class SimulationManager {
 
     /** The current active count. */
     private static int currentActiveCount = 0;
+    
+    /** The duration of a cycle for timed semaphores */
+    private static final int TIMED_CYCLE = 30;
 
     /** The simulation. */
     private SmartSemaphores simulation;
@@ -84,7 +87,7 @@ public class SimulationManager {
     }
 
     /**
-     * Inits the.
+     * Inits the simulation.
      *
      * @param sources
      *            the sources
@@ -244,7 +247,7 @@ public class SimulationManager {
 
 	if (SmartSemaphores.SIMULATION_TYPE == SimulationType.TIMED_AGENTS) {
 	    SimulationManager.currentActiveCount++;
-	    if (SimulationManager.currentActiveCount == 60) {
+	    if (SimulationManager.currentActiveCount == SimulationManager.TIMED_CYCLE) {
 		SimulationManager.currentActiveCount = 0;
 		SimulationManager.currentActiveSequence++;
 		if (SimulationManager.currentActiveSequence == 5)
