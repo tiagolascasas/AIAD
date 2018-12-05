@@ -95,7 +95,8 @@ public abstract class SemaphoricAgent extends RoadAgent {
      */
     @Override
     protected void setup() {
-	System.out.println("Agent " + this.id + " is online");
+    	if (!SmartSemaphores.DATA_REPORTING)
+    		System.out.println("Agent " + this.id + " is online");
     }
 
     /*
@@ -105,7 +106,8 @@ public abstract class SemaphoricAgent extends RoadAgent {
      */
     @Override
     protected void takeDown() {
-	System.out.println("Agent " + this.id + " has been terminated");
+    	if (!SmartSemaphores.DATA_REPORTING)
+    		System.out.println("Agent " + this.id + " has been terminated");
     }
 
     /**
@@ -118,7 +120,8 @@ public abstract class SemaphoricAgent extends RoadAgent {
 	if (wantedState == this.state)
 	    return;
 
-	System.out.println("Agent " + Integer.toString(this.id) + " changing state to " + this.state.toString());
+	if (!SmartSemaphores.DATA_REPORTING)
+		System.out.println("Agent " + Integer.toString(this.id) + " changing state to " + this.state.toString());
 
 	for (String agentName : this.connectableAgents) {
 	    Context<?> context = ContextUtils.getContext(this);

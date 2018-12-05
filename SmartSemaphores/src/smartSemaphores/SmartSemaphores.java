@@ -20,6 +20,7 @@ import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
+import repast.simphony.random.RandomHelper;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
@@ -43,6 +44,9 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 
     /** The Constant TICKS_PER_SECOND. */
     public static final float TICKS_PER_SECOND = 1.0f;
+    
+    /** Flag for multiple runs */
+    public static final boolean DATA_REPORTING = true;
 
     /** The simulation type. */
     public static SimulationType SIMULATION_TYPE = SimulationType.CONSENSUAL_AGENTS;
@@ -110,7 +114,7 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
      * @see sajas.sim.repasts.RepastSLauncher#launchJADE()
      */
     @Override
-    protected void launchJADE() {
+    protected void launchJADE() {    
 	Runtime rt = Runtime.instance();
 	Profile p0 = new ProfileImpl();
 	Profile p1 = new ProfileImpl();
@@ -351,6 +355,15 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
 	MAX_STARTING_CARS = (int) params.getValue("maxStartCars");
 	EMERGENCY_PROBABILITY = (double) params.getValue("emergencyProbability");
 	PEDESTRIAN_PROBABILITY = (double) params.getValue("pedestrianProbability");
+	
+    if (this.DATA_REPORTING)
+    {
+	    this.EMERGENCY_PROBABILITY = RandomHelper.nextDoubleFromTo(0.005, 0.5);
+	    this.PEDESTRIAN_PROBABILITY = RandomHelper.nextDoubleFromTo(0.1, 1.0);
+	    this.EXIT_RATE = RandomHelper.nextIntFromTo(1, 4);
+	    int r = RandomHelper.nextIntFromTo(0, 2);
+	    this.SIMULATION_TYPE = r != 0 ? (r == 1 ? SimulationType.CONSENSUAL_AGENTS : SimulationType.SMART_AGENTS) : SimulationType.TIMED_AGENTS;
+    }
 
 	MAX_TICKS = (int) (TICKS_PER_SECOND * 3600 * HOURS);
 	RunEnvironment.getInstance().endAt(MAX_TICKS);

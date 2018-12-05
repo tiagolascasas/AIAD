@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
+import smartSemaphores.SmartSemaphores;
+
 /**
  * The Class TimesTable.
  */
@@ -69,6 +71,27 @@ public class TimesTable {
 		System.out.println(source + "->" + sink + ": " + average + "s");
 	    }
 	}
+    }
+    
+    public String getCSV()
+    {
+    	String s = "";
+    	for (Integer source : this.table.keySet()) {
+    	    for (Integer sink : this.table.get(source).keySet()) 
+    	    {
+	    		int average = getAverage(this.table.get(source).get(sink));
+	    		StringBuilder b = new StringBuilder();
+	    		b.append(average).append(",")
+	    		.append(source).append(",")
+	    		.append(sink).append(",")
+	    		.append(SmartSemaphores.SIMULATION_TYPE).append(",")
+	    		.append(SmartSemaphores.EMERGENCY_PROBABILITY).append(",")
+	    		.append(SmartSemaphores.PEDESTRIAN_PROBABILITY).append(",")
+	    		.append(SmartSemaphores.EXIT_RATE).append("\n");
+	    		s += b.toString();
+    	    }
+    	}
+    	return s;
     }
 
     /**

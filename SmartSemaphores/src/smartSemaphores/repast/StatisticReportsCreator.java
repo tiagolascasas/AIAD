@@ -10,6 +10,9 @@ package smartSemaphores.repast;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -173,6 +176,21 @@ public class StatisticReportsCreator {
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
+    }
+    
+    public static void saveToDataset(TimesTable table)
+    {
+    	System.out.println("Working Directory = " +
+                System.getProperty("user.dir"));
+    	String data = table.getCSV();
+    	try 
+    	{
+    	    Files.write(Paths.get("D:/Git/AIAD/SmartSemaphores/results/dataset.csv"), data.getBytes(), StandardOpenOption.APPEND);
+    	}
+    	catch (IOException e) 
+    	{
+    	    e.printStackTrace();
+    	}
     }
 
     /**
