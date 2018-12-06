@@ -48,6 +48,8 @@ public class SmartSemaphores extends RepastSLauncher implements ContextBuilder<O
     /** Flag for multiple runs */
     public static final boolean DATA_REPORTING = true;
 
+	public static int SIM_COUNT = 1;
+
     /** The simulation type. */
     public static SimulationType SIMULATION_TYPE = SimulationType.CONSENSUAL_AGENTS;
 

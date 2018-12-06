@@ -346,7 +346,11 @@ public class SimulationManager {
 		TimesTable t2 = new TimesTable(exitedEmer);
 
 		if (SmartSemaphores.DATA_REPORTING)
+		{
+			System.out.println("Finished simulation no. " + SmartSemaphores.SIM_COUNT);
+			SmartSemaphores.SIM_COUNT++;
 			StatisticReportsCreator.saveToDataset(t1);
+		}
 
 		if (!SmartSemaphores.DATA_REPORTING) {
 			System.out.println("\n" + this.injectedVehicles.size() + " normal vehicles entered the simulation");
