@@ -101,11 +101,20 @@ public class TimesTable {
      *            the times
      * @return the average
      */
-    private int getAverage(ArrayList<Integer> times) {
+    public static int getAverage(ArrayList<Integer> times) {
 	int sum = 0;
 	for (Integer i : times)
 	    sum += i;
 	return (int) ((float) sum / (float) times.size());
+    }
+    
+    public static double variance(ArrayList<Integer> data)
+    {
+    	double temp = 0;
+    	for (int i = 0; i < data.size(); i++) {
+    	    temp += Math.pow(getAverage(data) - data.get(i), 2);
+    	}
+    	return temp/data.size(); 
     }
 
     /*

@@ -185,7 +185,7 @@ public class StatisticReportsCreator {
     	String data = table.getCSV();
     	try 
     	{
-    	    Files.write(Paths.get("D:/Git/AIAD/SmartSemaphores/results/dataset.csv"), data.getBytes(), StandardOpenOption.APPEND);
+    	    Files.write(Paths.get("C:/Users/up201503616/Desktop/AIAD/SmartSemaphores/results/dataset.csv"), data.getBytes(), StandardOpenOption.APPEND);
     	}
     	catch (IOException e) 
     	{
@@ -203,4 +203,32 @@ public class StatisticReportsCreator {
     private static String makePath(String uniqueID) {
 	return "results/" + uniqueID + "/" + uniqueID;
     }
+
+	public static void saveToSemaphoricDataset(HashMap<Integer, Integer> greenTimes, HashMap<Integer, Double> variances) 
+	{
+    	System.out.println("Working Directory = " +
+                System.getProperty("user.dir"));
+    	String s = "";
+	    for (Integer agent : greenTimes.keySet()) 
+	    {
+    		StringBuilder b = new StringBuilder();
+    		b.append(greenTimes.get(agent)).append(",")
+    		.append(agent).append(",")
+    		.append(variances.get(agent)).append(",")
+    		.append(SmartSemaphores.SIMULATION_TYPE).append(",")
+    		.append(SmartSemaphores.EMERGENCY_PROBABILITY).append(",")
+    		.append(SmartSemaphores.PEDESTRIAN_PROBABILITY).append(",")
+    		.append(SmartSemaphores.EXIT_RATE).append("\n");
+    		s += b.toString();
+	    }
+    	
+    	try 
+    	{
+    	    Files.write(Paths.get("C:/Users/up201503616/Desktop/AIAD/SmartSemaphores/results/dataset_semaphores.csv"), s.getBytes(), StandardOpenOption.APPEND);
+    	}
+    	catch (IOException e) 
+    	{
+    	    e.printStackTrace();
+    	}
+	}
 }

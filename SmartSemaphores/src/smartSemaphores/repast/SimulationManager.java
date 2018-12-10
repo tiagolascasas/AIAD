@@ -140,6 +140,9 @@ public class SimulationManager {
 				printBasicReportToStdout();
 			SimulationManager.currentTick = 0;
 		}
+		
+		for (SemaphoricAgent agent : this.semaphoricAgents)
+			agent.incrementCounters();
 	}
 
 	/**
@@ -344,12 +347,25 @@ public class SimulationManager {
 
 		TimesTable t1 = new TimesTable(exitedNormal);
 		TimesTable t2 = new TimesTable(exitedEmer);
+		
+		HashMap<Integer, Integer> greenTimes = new HashMap<>();
+		HashMap<Integer, Double> variances = new HashMap<>();
+		
+		for (SemaphoricAgent agent : this.semaphoricAgents)
+		{
+			ArrayList<Integer> times = agent.getGreenTimes();
+			int avg = TimesTable.getAverage(times);
+			double variance = TimesTable.variance(times);
+			greenTimes.put(agent.getID(), avg);
+			variances.put(agent.getID(), variance);
+		}
 
 		if (SmartSemaphores.DATA_REPORTING)
 		{
 			System.out.println("Finished simulation no. " + SmartSemaphores.SIM_COUNT);
 			SmartSemaphores.SIM_COUNT++;
 			StatisticReportsCreator.saveToDataset(t1);
+			StatisticReportsCreator.saveToSemaphoricDataset(greenTimes, variances);
 		}
 
 		if (!SmartSemaphores.DATA_REPORTING) {
