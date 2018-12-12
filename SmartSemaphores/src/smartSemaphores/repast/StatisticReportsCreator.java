@@ -25,7 +25,9 @@ import smartSemaphores.jade.SemaphoricAgent;
  */
 public class StatisticReportsCreator {
 
-    /**
+    private static final String path = "D:/Git/AIAD/SmartSemaphores/results/";
+
+	/**
      * Generate variables report.
      *
      * @param uniqueID
@@ -185,7 +187,7 @@ public class StatisticReportsCreator {
     	String data = table.getCSV();
     	try 
     	{
-    	    Files.write(Paths.get("C:/Users/up201503616/Desktop/AIAD/SmartSemaphores/results/dataset.csv"), data.getBytes(), StandardOpenOption.APPEND);
+    	    Files.write(Paths.get(path + "dataset_vehicles.csv"), data.getBytes(), StandardOpenOption.APPEND);
     	}
     	catch (IOException e) 
     	{
@@ -224,7 +226,7 @@ public class StatisticReportsCreator {
     	
     	try 
     	{
-    	    Files.write(Paths.get("C:/Users/up201503616/Desktop/AIAD/SmartSemaphores/results/dataset_semaphores.csv"), s.getBytes(), StandardOpenOption.APPEND);
+    	    Files.write(Paths.get(path + "dataset_semaphores.csv"), s.getBytes(), StandardOpenOption.APPEND);
     	}
     	catch (IOException e) 
     	{
