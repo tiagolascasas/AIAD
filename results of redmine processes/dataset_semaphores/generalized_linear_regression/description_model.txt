@@ -1,0 +1,22 @@
+
+GeneralizedLinear
+
+Model Metrics Type: RegressionGLM
+ Description: N/A
+ model id: rm-h2o-model-generalized_linear_model-657694
+ frame id: rm-h2o-frame-generalized_linear_model-966198
+ MSE: 11.902148
+ R^2: 0.90876174
+ mean residual deviance: 11.902148
+ null DOF: 23363.0
+ residual DOF: 23359.0
+ null deviance: 3047864.5
+ residual deviance: 278081.78
+ AIC: 124182.22
+GLM Model (summary):
+   Family Link  Regularization Number of Predictors Total Number of Active Predictors Number of Iterations Training Frame                   
+ gaussian identity Elastic Net (alpha = 0.5, lambda = 0.02167 ) 6 4 0 rm-h2o-frame-generalized_linear_model-966198
+Scoring History:
+ timestamp duration iteration negative_log_likelihood objective
+
+H2O version: 3.8.2.6-rm9.0.0

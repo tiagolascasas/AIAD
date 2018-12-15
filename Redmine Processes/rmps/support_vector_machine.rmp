@@ -14,7 +14,7 @@
     <parameter key="encoding" value="SYSTEM"/>
     <process expanded="true">
       <operator activated="true" class="retrieve" compatibility="9.0.003" expanded="true" height="68" name="Retrieve dataset" width="90" x="45" y="136">
-        <parameter key="repository_entry" value="../Dados/dataset_semaphores"/>
+        <parameter key="repository_entry" value="//AIAD/AIAD-Semáforos/Dados/dataset_semaphores"/>
       </operator>
       <operator activated="true" class="nominal_to_numerical" compatibility="9.0.003" expanded="true" height="103" name="Nominal to Numerical" width="90" x="179" y="187">
         <parameter key="return_preprocessing_model" value="false"/>
@@ -47,16 +47,32 @@
         <parameter key="use_local_random_seed" value="false"/>
         <parameter key="local_random_seed" value="1992"/>
         <process expanded="true">
-          <operator activated="true" class="linear_regression" compatibility="9.0.003" expanded="true" height="103" name="Linear Regression" width="90" x="179" y="136">
-            <parameter key="feature_selection" value="M5 prime"/>
-            <parameter key="alpha" value="0.05"/>
-            <parameter key="max_iterations" value="10"/>
-            <parameter key="forward_alpha" value="0.05"/>
-            <parameter key="backward_alpha" value="0.05"/>
-            <parameter key="eliminate_colinear_features" value="true"/>
-            <parameter key="min_tolerance" value="0.05"/>
-            <parameter key="use_bias" value="true"/>
-            <parameter key="ridge" value="1.0E-8"/>
+          <operator activated="true" class="support_vector_machine" compatibility="9.0.003" expanded="true" height="124" name="SVM" width="90" x="45" y="136">
+            <parameter key="kernel_type" value="dot"/>
+            <parameter key="kernel_gamma" value="1.0"/>
+            <parameter key="kernel_sigma1" value="1.0"/>
+            <parameter key="kernel_sigma2" value="0.0"/>
+            <parameter key="kernel_sigma3" value="2.0"/>
+            <parameter key="kernel_shift" value="1.0"/>
+            <parameter key="kernel_degree" value="2.0"/>
+            <parameter key="kernel_a" value="1.0"/>
+            <parameter key="kernel_b" value="0.0"/>
+            <parameter key="kernel_cache" value="200"/>
+            <parameter key="C" value="0.0"/>
+            <parameter key="convergence_epsilon" value="0.001"/>
+            <parameter key="max_iterations" value="100000"/>
+            <parameter key="scale" value="true"/>
+            <parameter key="calculate_weights" value="true"/>
+            <parameter key="return_optimization_performance" value="true"/>
+            <parameter key="L_pos" value="1.0"/>
+            <parameter key="L_neg" value="1.0"/>
+            <parameter key="epsilon" value="0.0"/>
+            <parameter key="epsilon_plus" value="0.0"/>
+            <parameter key="epsilon_minus" value="0.0"/>
+            <parameter key="balance_cost" value="false"/>
+            <parameter key="quadratic_loss_pos" value="false"/>
+            <parameter key="quadratic_loss_neg" value="false"/>
+            <parameter key="estimate_performance" value="false"/>
           </operator>
           <operator activated="true" class="apply_model" compatibility="9.0.003" expanded="true" height="82" name="Apply Model" width="90" x="179" y="289">
             <list key="application_parameters"/>
@@ -67,22 +83,23 @@
             <parameter key="root_mean_squared_error" value="true"/>
             <parameter key="absolute_error" value="true"/>
             <parameter key="relative_error" value="true"/>
-            <parameter key="relative_error_lenient" value="false"/>
-            <parameter key="relative_error_strict" value="false"/>
-            <parameter key="normalized_absolute_error" value="false"/>
+            <parameter key="relative_error_lenient" value="true"/>
+            <parameter key="relative_error_strict" value="true"/>
+            <parameter key="normalized_absolute_error" value="true"/>
             <parameter key="root_relative_squared_error" value="true"/>
-            <parameter key="squared_error" value="false"/>
-            <parameter key="correlation" value="false"/>
-            <parameter key="squared_correlation" value="false"/>
-            <parameter key="prediction_average" value="false"/>
-            <parameter key="spearman_rho" value="false"/>
-            <parameter key="kendall_tau" value="false"/>
+            <parameter key="squared_error" value="true"/>
+            <parameter key="correlation" value="true"/>
+            <parameter key="squared_correlation" value="true"/>
+            <parameter key="prediction_average" value="true"/>
+            <parameter key="spearman_rho" value="true"/>
+            <parameter key="kendall_tau" value="true"/>
             <parameter key="skip_undefined_labels" value="true"/>
             <parameter key="use_example_weights" value="true"/>
           </operator>
-          <connect from_port="training" to_op="Linear Regression" to_port="training set"/>
-          <connect from_op="Linear Regression" from_port="model" to_op="Apply Model" to_port="model"/>
-          <connect from_op="Linear Regression" from_port="exampleSet" to_op="Apply Model" to_port="unlabelled data"/>
+          <connect from_port="training" to_op="SVM" to_port="training set"/>
+          <connect from_op="SVM" from_port="model" to_op="Apply Model" to_port="model"/>
+          <connect from_op="SVM" from_port="estimated performance" to_op="Erro de Treino" to_port="performance"/>
+          <connect from_op="SVM" from_port="exampleSet" to_op="Apply Model" to_port="unlabelled data"/>
           <connect from_op="Apply Model" from_port="labelled data" to_op="Erro de Treino" to_port="labelled data"/>
           <connect from_op="Apply Model" from_port="model" to_port="model"/>
           <connect from_op="Erro de Treino" from_port="performance" to_port="through 1"/>
@@ -101,16 +118,16 @@
             <parameter key="root_mean_squared_error" value="true"/>
             <parameter key="absolute_error" value="true"/>
             <parameter key="relative_error" value="true"/>
-            <parameter key="relative_error_lenient" value="false"/>
-            <parameter key="relative_error_strict" value="false"/>
-            <parameter key="normalized_absolute_error" value="false"/>
+            <parameter key="relative_error_lenient" value="true"/>
+            <parameter key="relative_error_strict" value="true"/>
+            <parameter key="normalized_absolute_error" value="true"/>
             <parameter key="root_relative_squared_error" value="true"/>
-            <parameter key="squared_error" value="false"/>
-            <parameter key="correlation" value="false"/>
-            <parameter key="squared_correlation" value="false"/>
-            <parameter key="prediction_average" value="false"/>
-            <parameter key="spearman_rho" value="false"/>
-            <parameter key="kendall_tau" value="false"/>
+            <parameter key="squared_error" value="true"/>
+            <parameter key="correlation" value="true"/>
+            <parameter key="squared_correlation" value="true"/>
+            <parameter key="prediction_average" value="true"/>
+            <parameter key="spearman_rho" value="true"/>
+            <parameter key="kendall_tau" value="true"/>
             <parameter key="skip_undefined_labels" value="true"/>
             <parameter key="use_example_weights" value="true"/>
           </operator>
