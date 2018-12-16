@@ -216,7 +216,6 @@ public class StatisticReportsCreator {
     		StringBuilder b = new StringBuilder();
     		b.append(greenTimes.get(agent)).append(",")
     		.append(agent).append(",")
-    		.append(variances.get(agent)).append(",")
     		.append(SmartSemaphores.SIMULATION_TYPE).append(",")
     		.append(SmartSemaphores.EMERGENCY_PROBABILITY).append(",")
     		.append(SmartSemaphores.PEDESTRIAN_PROBABILITY).append(",")
